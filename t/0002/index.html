@@ -20,7 +20,6 @@
         }
 
         body {
-            /* Fondo metálico pulido oscuro */
             background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%);
             color: var(--text-main);
             display: flex;
@@ -37,10 +36,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 24px; /* Mayor espaciado visual */
+            gap: 24px;
         }
 
-        /* Logo de la marca con efecto de brillo pulsante */
         .brand-logo {
             color: var(--gold-primary);
             font-size: 2.8rem;
@@ -64,7 +62,6 @@
             }
         }
 
-        /* Spinner / Indicador de carga dorado estilo elegante */
         .spinner {
             width: 38px;
             height: 38px;
@@ -80,7 +77,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Mensaje de redirección espaciado */
         .status-text {
             color: var(--text-muted);
             font-size: 0.85rem;
@@ -90,7 +86,6 @@
             margin-top: 10px;
         }
 
-        /* Pantalla de error elegante */
         .error-card {
             background: #111113;
             border: 1px solid var(--gold-primary);
@@ -120,49 +115,42 @@
     <div class="loader-container" id="loader">
         <div class="brand-logo">linkea.fy</div>
         <div class="spinner"></div>
-        <div class="status-text">Redirigiendo...</div>
+        <div class="status-text">Verificando tarjeta...</div>
     </div>
 
     <script>
         async function redirigir() {
-
-
             // ==========================================
             // 👇 MODIFICA EL ID AQUÍ (EJ: "0001", "0002", etc.) 👇
             // ==========================================
-            
             const currentId = "0002"; 
-            
             // ==========================================
 
-
             try {
-                // Buscamos tarjetas.json en la raíz del repositorio
+                // Buscamos tarjetas.json en la raíz del repositorio (ajustando niveles si estás en t/0001)
                 const response = await fetch(`../../tarjetas.json?_=${new Date().getTime()}`);
                 if (!response.ok) throw new Error("No se pudo cargar el archivo tarjetas.json");
                 
                 const tarjetas = await response.json();
                 const tarjeta = tarjetas.find(t => t.id === currentId);
                 
-                if (tarjeta && tarjeta.estado === 'activa' && tarjeta.link) {
-                    // Esperamos 800ms para mostrar la animación elegante de la marca
-                    setTimeout(() => {
+                setTimeout(() => {
+                    // Verificamos si la tarjeta existe, está activa y tiene un link válido cargado
+                    if (tarjeta && tarjeta.estado === 'activa' && tarjeta.link && tarjeta.link.trim() !== "") {
+                        // Redirige al enlace del negocio/cliente asignado
                         window.location.replace(tarjeta.link);
-                    }, 800);
-                } else {
-                    document.body.innerHTML = `
-                        <div class="error-card">
-                            <h2>linkea.fy</h2>
-                            <p>Esta tarjeta se encuentra inactiva o no está disponible en este momento.</p>
-                        </div>
-                    `;
-                }
+                    } else {
+                        // Si el link está vacío, no existe o la tarjeta está en stock, redirige a activación pasando el ID
+                        window.location.replace(`../../activacion.html?id=${currentId}`);
+                    }
+                }, 800);
+
             } catch (e) {
                 console.error(e);
                 document.body.innerHTML = `
                     <div class="error-card">
                         <h2>linkea.fy</h2>
-                        <p>Error de conexión al procesar la redirección.</p>
+                        <p>Error de conexión al procesar la redirección de la tarjeta.</p>
                     </div>
                 `;
             }
