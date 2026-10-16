@@ -100,7 +100,7 @@
         }
 
         /* ==========================================
-           CONTENEDOR 3D CINEMÁTICO Y TÁCTIL SEGURO
+           CONTENEDOR 3D Y ESTABILIZACIÓN MÓVIL
            ========================================== */
         .card-tilt-container {
             width: 100%;
@@ -109,7 +109,7 @@
             margin-bottom: 22px;
             perspective: 1200px;
             cursor: pointer;
-            touch-action: none; /* Solución clave para evitar el bloqueo y scroll en celulares */
+            touch-action: none;
         }
 
         .card-3d-scene {
@@ -129,7 +129,8 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            top: 0; left: 0;
+            top: 0; 
+            left: 0;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             border-radius: 14px;
@@ -143,8 +144,10 @@
             border: 1px solid rgba(223, 177, 91, 0.38);
             padding: 20px;
             overflow: hidden;
+            transform: rotateY(0deg);
         }
 
+        /* Corregido: el dorso ahora invierte correctamente su contenido sin mezclarse */
         .card-back {
             transform: rotateY(180deg);
             text-align: center;
@@ -176,7 +179,7 @@
         }
 
         /* ==========================================
-           DESTELLO METÁLICO FLUIDO EN FRENTE Y DORSO
+           DESTELLO METÁLICO FLUIDO
            ========================================== */
         .card-face::before {
             content: '';
@@ -346,19 +349,16 @@
         // EXTRACCIÓN AUTOMÁTICA DEL ID DESDE LA URL
         // ==========================================
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
-        // Busca el segmento correspondiente al ID (ej: si la ruta es /t/0045/index.html o /0045/)
         let currentId = "0001";
         
         for (let i = pathSegments.length - 1; i >= 0; i--) {
             let seg = pathSegments[i];
-            // Si encuentra un segmento numérico o de 4 dígitos, lo toma como ID
             if (!seg.includes('.html') && seg !== 't' && seg !== 'linkea.fy') {
                 currentId = seg;
                 break;
             }
         }
 
-        // Muestra el ID detectado de forma automática en pantalla
         document.getElementById('badgeId').innerText = `Tarjeta #${currentId}`;
 
         // Generar el código QR dinámico apuntando a la URL actual
@@ -374,7 +374,7 @@
 
         // Configurar enlace de WhatsApp con el ID automático
         const mensajeWa = encodeURIComponent(`Hola, tengo en mis manos la tarjeta linkea.fy con el ID #${currentId} y quiero activarla para mi negocio.`);
-        document.getElementById('whatsappBtn').href = `https://wa.me/TU_NUMERO_DE_WHATSAPP?text=${mensajeWa}`;
+        document.getElementById('whatsappBtn'].href = `https://wa.me/TU_NUMERO_DE_WHATSAPP?text=${mensajeWa}`;
 
         // ==========================================
         // CONTROL 3D TILT & GIRO ÉPICO CON SOPORTE TÁCTIL SEGURO
@@ -429,7 +429,6 @@
             updateTransform();
         });
 
-        // Eventos táctiles optimizados para celulares (evita que mueva la página y bloquee el scroll general)
         container.addEventListener('touchmove', (e) => {
             e.preventDefault(); 
             if (e.touches.length > 0) {
