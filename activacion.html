@@ -100,7 +100,7 @@
         }
 
         /* ==========================================
-           CONTENEDOR 3D CINEMÁTICO ULTRA FLUIDO
+           CONTENEDOR 3D CINEMÁTICO Y TÁCTIL SEGURO
            ========================================== */
         .card-tilt-container {
             width: 100%;
@@ -109,7 +109,7 @@
             margin-bottom: 22px;
             perspective: 1200px;
             cursor: pointer;
-            touch-action: none;
+            touch-action: none; /* Solución clave para evitar el bloqueo y scroll en celulares */
         }
 
         .card-3d-scene {
@@ -121,7 +121,6 @@
             transition: transform 0.12s cubic-bezier(0.1, 0.9, 0.2, 1);
         }
 
-        /* Giro súper fluido con curva de aceleración cinematográfica */
         .card-3d-scene.animating-flip {
             transition: transform 0.95s cubic-bezier(0.19, 1, 0.22, 1) !important;
         }
@@ -201,7 +200,6 @@
             z-index: 1;
         }
 
-        /* Desfase para que el dorso tenga su propia onda dinámica */
         .card-back::before {
             animation-delay: 1.1s;
         }
@@ -211,19 +209,14 @@
                 transform: rotate(25deg) translateY(-120%);
                 opacity: 0;
             }
-            15% {
-                opacity: 1;
-            }
-            85% {
-                opacity: 1;
-            }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
             100% {
                 transform: rotate(25deg) translateY(120%);
                 opacity: 0;
             }
         }
 
-        /* Reflejo interactivo que reacciona a la inclinación */
         .card-shine {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -234,7 +227,6 @@
             z-index: 3;
         }
 
-        /* Botón de giro interactivo */
         .btn-flip {
             background: rgba(223, 177, 91, 0.08);
             color: var(--gold-primary);
@@ -315,7 +307,7 @@
 
     <div class="container">
         <div class="brand-logo">linkea.fy</div>
-        <div class="card-id-badge" id="badgeId">Tarjeta en Stock</div>
+        <div class="card-id-badge" id="badgeId">Cargando ID...</div>
 
         <!-- Tarjeta Interactiva 3D HD -->
         <div class="card-tilt-container" id="tiltContainer">
@@ -350,18 +342,26 @@
     </div>
 
     <script>
-        // Detección automática del ID desde la URL
-        const pathSegments = window.location.pathname.split('/');
-        let folderId = pathSegments[pathSegments.length - 2] || pathSegments[pathSegments.length - 1];
-        
+        // ==========================================
+        // EXTRACCIÓN AUTOMÁTICA DEL ID DESDE LA URL
+        // ==========================================
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        // Busca el segmento correspondiente al ID (ej: si la ruta es /t/0045/index.html o /0045/)
         let currentId = "0001";
-        if (folderId && folderId !== "t" && folderId !== "") {
-            currentId = folderId;
+        
+        for (let i = pathSegments.length - 1; i >= 0; i--) {
+            let seg = pathSegments[i];
+            // Si encuentra un segmento numérico o de 4 dígitos, lo toma como ID
+            if (!seg.includes('.html') && seg !== 't' && seg !== 'linkea.fy') {
+                currentId = seg;
+                break;
+            }
         }
 
+        // Muestra el ID detectado de forma automática en pantalla
         document.getElementById('badgeId').innerText = `Tarjeta #${currentId}`;
 
-        // Generar el código QR apuntando a la propia página
+        // Generar el código QR dinámico apuntando a la URL actual
         const currentUrl = window.location.href;
         new QRCode(document.getElementById("qrContainer"), {
             text: currentUrl,
@@ -372,12 +372,12 @@
             correctLevel: QRCode.CorrectLevel.H
         });
 
-        // Configurar enlace de WhatsApp
+        // Configurar enlace de WhatsApp con el ID automático
         const mensajeWa = encodeURIComponent(`Hola, tengo en mis manos la tarjeta linkea.fy con el ID #${currentId} y quiero activarla para mi negocio.`);
         document.getElementById('whatsappBtn').href = `https://wa.me/TU_NUMERO_DE_WHATSAPP?text=${mensajeWa}`;
 
         // ==========================================
-        // CONTROL 3D TILT & GIRO ÉPICO LENTO
+        // CONTROL 3D TILT & GIRO ÉPICO CON SOPORTE TÁCTIL SEGURO
         // ==========================================
         const container = document.getElementById('tiltContainer');
         const scene = document.getElementById('cardScene');
@@ -429,6 +429,7 @@
             updateTransform();
         });
 
+        // Eventos táctiles optimizados para celulares (evita que mueva la página y bloquee el scroll general)
         container.addEventListener('touchmove', (e) => {
             e.preventDefault(); 
             if (e.touches.length > 0) {
