@@ -33,10 +33,8 @@
             text-align: center;
             overflow-x: hidden;
             position: relative;
-            perspective: 1000px;
         }
 
-        /* Aura de luz sutil de fondo */
         .bg-glow {
             position: absolute;
             width: 400px;
@@ -91,44 +89,57 @@
             font-size: 0.7rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             font-weight: 600;
         }
 
         /* ==========================================
-           CONTENEDOR DE LA TARJETA VIVA 3D
+           CONTENEDOR 3D FLIP & TILT
            ========================================== */
         .card-tilt-container {
             width: 100%;
             display: flex;
             justify-content: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             perspective: 1000px;
             cursor: pointer;
+            touch-action: none; /* Evita que el celular mueva la página al tocar la tarjeta */
         }
 
-        .physical-card-live {
+        .card-3d-scene {
             width: 340px;
             height: 200px;
-            background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%);
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Caras de la tarjeta */
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0; left: 0;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             border-radius: 12px;
+            background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 16px;
-            position: relative;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9), inset 0 1px 1px rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(223, 177, 91, 0.3);
-            transform-style: preserve-style;
-            transition: transform 0.1s ease-out, box-shadow 0.3s ease;
         }
 
-        .physical-card-live:hover {
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.95), 0 0 25px rgba(223, 177, 91, 0.3);
+        /* Dorso de la tarjeta (girado 180 grados por defecto) */
+        .card-back {
+            transform: rotateY(180deg);
+            padding: 20px;
+            text-align: center;
         }
 
-        /* Efecto de reflejo holográfico dinámico sobre la tarjeta */
+        /* Efecto de brillo holográfico */
         .card-shine {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -150,13 +161,37 @@
             color: var(--text-muted);
             letter-spacing: 2px;
             text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        /* Botón flotante para dar vuelta la tarjeta */
+        .btn-flip {
+            background: rgba(223, 177, 91, 0.1);
+            color: var(--gold-primary);
+            border: 1px solid rgba(223, 177, 91, 0.3);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-flip:hover {
+            background: var(--gold-primary);
+            color: #000;
         }
 
         h1 {
             font-size: 1.1rem;
             font-weight: 500;
             letter-spacing: 1px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: var(--text-main);
         }
 
@@ -164,7 +199,7 @@
             color: var(--text-muted);
             font-size: 0.82rem;
             line-height: 1.5;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .btn-claim {
@@ -205,17 +240,31 @@
         <div class="brand-logo">linkea.fy</div>
         <div class="card-id-badge" id="badgeId">Tarjeta en Stock</div>
 
-        <!-- Tarjeta Interactiva Viva 3D -->
-        <div class="card-tilt-container" id="tiltCard">
-            <div class="physical-card-live" id="cardElement">
-                <div class="card-shine" id="cardShine"></div>
-                <div class="card-inner-logo">linkea.fy</div>
-                <div class="card-inner-status">Espacio Disponible</div>
+        <!-- Tarjeta Interactiva 3D con Frente y Dorso -->
+        <div class="card-tilt-container" id="tiltContainer">
+            <div class="card-3d-scene" id="cardScene">
+                <!-- CARA FRONTAL -->
+                <div class="card-face card-front">
+                    <div class="card-shine"></div>
+                    <div class="card-inner-logo">linkea.fy</div>
+                    <div class="card-inner-status">Metal Edition</div>
+                </div>
+                <!-- CARA TRASERA (DORSO) -->
+                <div class="card-face card-back">
+                    <div class="card-shine"></div>
+                    <div style="font-size: 0.85rem; color: var(--gold-primary); letter-spacing: 2px; margin-bottom: 8px;">BLACK GOLD</div>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.4;">Tecnología NFC & QR Integrada<br>Diseñado para alta durabilidad</div>
+                </div>
             </div>
         </div>
 
+        <!-- Botón para voltear la tarjeta -->
+        <button class="btn-flip" id="flipBtn">
+            <i class="fa-solid fa-rotate"></i> Ver Dorso / Frente
+        </button>
+
         <h1>Tu marca merece este nivel</h1>
-        <p>Esta tarjeta física <strong>Black Gold</strong> está lista para ser programada. Desliza tu dedo o mueve el cursor sobre ella para sentir su acabado metálico interactivo.</p>
+        <p>Mueve el dedo o el cursor sobre la tarjeta para inclinarla en 3D. Gira la tarjeta para ver ambos lados de este diseño exclusivo.</p>
 
         <!-- Botón de WhatsApp con ID dinámico -->
         <a id="whatsappBtn" href="#" target="_blank" class="btn-claim">
@@ -234,57 +283,73 @@
             document.getElementById('badgeId').innerText = `Tarjeta #${currentId}`;
         }
 
-        // Configurar enlace de WhatsApp con el ID detectado
+        // Configurar enlace de WhatsApp
         const mensajeWa = encodeURIComponent(`Hola, tengo en mis manos la tarjeta linkea.fy con el ID #${currentId} y quiero activarla para mi negocio.`);
         document.getElementById('whatsappBtn').href = `https://wa.me/TU_NUMERO_DE_WHATSAPP?text=${mensajeWa}`;
 
         // ==========================================
-        // EFECTO TILT 3D INTERACTIVO (MOUSE Y TOUCH)
+        // CONTROL 3D TILT & FLIP (COMPATIBLE CELULARES)
         // ==========================================
-        const cardContainer = document.getElementById('tiltCard');
-        const card = document.getElementById('cardElement');
-        const shine = document.getElementById('cardShine');
+        const container = document.getElementById('tiltContainer');
+        const scene = document.getElementById('cardScene');
+        const flipBtn = document.getElementById('flipBtn');
 
+        let isFlipped = false;
+        let currentRotateX = 0;
+        let currentRotateY = 0;
+
+        // Función para actualizar la rotación combinando inclinación 3D y el giro de página
+        function updateTransform() {
+            const flipAngle = isFlipped ? 180 : 0;
+            scene.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY + flipAngle}deg)`;
+        }
+
+        // Botón para dar vuelta la tarjeta
+        flipBtn.addEventListener('click', () => {
+            isFlipped = !isFlipped;
+            updateTransform();
+        });
+
+        // Manejo táctil y de mouse sin bloquear el sitio (usando touch-action: none)
         function handleMove(clientX, clientY) {
-            const rect = card.getBoundingClientRect();
-            const x = clientX - rect.left; // Posición X dentro de la tarjeta
-            const y = clientY - rect.top;  // Posición Y dentro de la tarjeta
+            const rect = container.getBoundingClientRect();
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
 
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
 
-            // Calcular rotación basada en la distancia al centro (máximo 15 grados)
-            const rotateX = -((y - centerY) / centerY) * 15;
-            const rotateY = ((x - centerX) / centerX) * 15;
+            // Inclinación suave basada en la posición
+            currentRotateX = -((y - centerY) / centerY) * 12;
+            currentRotateY = ((x - centerX) / centerX) * 12;
 
-            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
-            
-            // Mover el brillo holográfico siguiendo el cursor
-            shine.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
-            shine.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
+            updateTransform();
         }
 
-        // Eventos para Computadora (Mouse)
-        cardContainer.addEventListener('mousemove', (e) => {
+        // Eventos de Mouse
+        container.addEventListener('mousemove', (e) => {
             handleMove(e.clientX, e.clientY);
         });
 
-        cardContainer.addEventListener('mouseleave', () => {
-            card.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
-            shine.style.setProperty('--mouse-x', `50%`);
-            shine.style.setProperty('--mouse-y', `50%`);
+        container.addEventListener('mouseleave', () => {
+            currentRotateX = 0;
+            currentRotateY = 0;
+            updateTransform();
         });
 
-        // Eventos para Celulares y Tablets (Touch)
-        cardContainer.addEventListener('touchmove', (e) => {
+        // Eventos Táctiles para Celulares (¡Soluciona el bloqueo de scroll!)
+        container.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // Evita que se mueva la página web al tocar la tarjeta
             if (e.touches.length > 0) {
                 const touch = e.touches[0];
                 handleMove(touch.clientX, touch.clientY);
             }
-        });
+        }, { passive: false });
 
-        cardContainer.addEventListener('touchend', () => {
-            card.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+        container.addEventListener('touchend', () => {
+            currentRotateX = 0;
+            currentRotateY = 0;
+            updateTransform();
         });
     </script>
 </body>
