@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Espacio Disponible | linkea.fy</title>
+    <!-- Librería para generar el QR dinámico -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -128,15 +130,40 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            gap: 12px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9), inset 0 1px 1px rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(223, 177, 91, 0.3);
+            padding: 20px;
         }
 
-        /* Dorso de la tarjeta (girado 180 grados por defecto) */
+        /* Dorso de la tarjeta */
         .card-back {
             transform: rotateY(180deg);
-            padding: 20px;
             text-align: center;
+        }
+
+        /* Estilo del QR integrado en el frente (blanco profesional) */
+        .qr-frame-minimal {
+            background: #ffffff;
+            padding: 5px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .qr-frame-minimal img, .qr-frame-minimal canvas {
+            display: block;
+            width: 68px !important;
+            height: 68px !important;
+        }
+
+        .card-inner-logo {
+            color: var(--gold-primary);
+            font-size: 1.8rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
         }
 
         /* Efecto de brillo holográfico */
@@ -147,21 +174,6 @@
             background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.12) 0%, transparent 70%);
             pointer-events: none;
             mix-blend-mode: overlay;
-        }
-
-        .card-inner-logo {
-            color: var(--gold-primary);
-            font-size: 2.2rem;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-        }
-
-        .card-inner-status {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 5px;
         }
 
         /* Botón flotante para dar vuelta la tarjeta */
@@ -240,20 +252,20 @@
         <div class="brand-logo">linkea.fy</div>
         <div class="card-id-badge" id="badgeId">Tarjeta en Stock</div>
 
-        <!-- Tarjeta Interactiva 3D con Frente y Dorso -->
+        <!-- Tarjeta Interactiva 3D con Frente (Logo + QR) y Dorso -->
         <div class="card-tilt-container" id="tiltContainer">
             <div class="card-3d-scene" id="cardScene">
-                <!-- CARA FRONTAL -->
+                <!-- CARA FRONTAL (Logo + QR Profesional) -->
                 <div class="card-face card-front">
                     <div class="card-shine"></div>
                     <div class="card-inner-logo">linkea.fy</div>
-                    <div class="card-inner-status">Metal Edition</div>
+                    <div class="qr-frame-minimal" id="qrContainer"></div>
                 </div>
                 <!-- CARA TRASERA (DORSO) -->
                 <div class="card-face card-back">
                     <div class="card-shine"></div>
                     <div style="font-size: 0.85rem; color: var(--gold-primary); letter-spacing: 2px; margin-bottom: 8px;">BLACK GOLD</div>
-                    <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.4;">Tecnología NFC & QR Integrada<br>Diseñado para alta durabilidad</div>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.4;">Tecnología NFC & QR Integrada<br>Espacio Exclusivo Disponible</div>
                 </div>
             </div>
         </div>
@@ -264,7 +276,7 @@
         </button>
 
         <h1>Tu marca merece este nivel</h1>
-        <p>Mueve el dedo o el cursor sobre la tarjeta para inclinarla en 3D. Gira la tarjeta para ver ambos lados de este diseño exclusivo.</p>
+        <p>Esta tarjeta física se encuentra lista en stock. Interactúa con ella en 3D y gírala para ver su diseño por ambos lados.</p>
 
         <!-- Botón de WhatsApp con ID dinámico -->
         <a id="whatsappBtn" href="#" target="_blank" class="btn-claim">
@@ -275,13 +287,25 @@
     <script>
         // Detección automática del ID desde la URL
         const pathSegments = window.location.pathname.split('/');
-        const folderId = pathSegments[pathSegments.length - 2] || pathSegments[pathSegments.length - 1];
+        let folderId = pathSegments[pathSegments.length - 2] || pathSegments[pathSegments.length - 1];
         
         let currentId = "0001";
         if (folderId && folderId !== "t" && folderId !== "") {
             currentId = folderId;
-            document.getElementById('badgeId').innerText = `Tarjeta #${currentId}`;
         }
+
+        document.getElementById('badgeId').innerText = `Tarjeta #${currentId}`;
+
+        // Generar el QR automáticamente apuntando a la propia tarjeta
+        const currentUrl = window.location.href;
+        new QRCode(document.getElementById("qrContainer"), {
+            text: currentUrl,
+            width: 68,
+            height: 68,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
 
         // Configurar enlace de WhatsApp
         const mensajeWa = encodeURIComponent(`Hola, tengo en mis manos la tarjeta linkea.fy con el ID #${currentId} y quiero activarla para mi negocio.`);
@@ -298,19 +322,16 @@
         let currentRotateX = 0;
         let currentRotateY = 0;
 
-        // Función para actualizar la rotación combinando inclinación 3D y el giro de página
         function updateTransform() {
             const flipAngle = isFlipped ? 180 : 0;
             scene.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY + flipAngle}deg)`;
         }
 
-        // Botón para dar vuelta la tarjeta
         flipBtn.addEventListener('click', () => {
             isFlipped = !isFlipped;
             updateTransform();
         });
 
-        // Manejo táctil y de mouse sin bloquear el sitio (usando touch-action: none)
         function handleMove(clientX, clientY) {
             const rect = container.getBoundingClientRect();
             const x = clientX - rect.left;
@@ -319,14 +340,12 @@
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
 
-            // Inclinación suave basada en la posición
             currentRotateX = -((y - centerY) / centerY) * 12;
             currentRotateY = ((x - centerX) / centerX) * 12;
 
             updateTransform();
         }
 
-        // Eventos de Mouse
         container.addEventListener('mousemove', (e) => {
             handleMove(e.clientX, e.clientY);
         });
@@ -337,7 +356,6 @@
             updateTransform();
         });
 
-        // Eventos Táctiles para Celulares (¡Soluciona el bloqueo de scroll!)
         container.addEventListener('touchmove', (e) => {
             e.preventDefault(); // Evita que se mueva la página web al tocar la tarjeta
             if (e.touches.length > 0) {
