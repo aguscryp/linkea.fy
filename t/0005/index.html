@@ -1,1 +1,175 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirigiendo... | linkea.fy</title>
+    <style>
+        :root {
+            --bg-color: #050507;
+            --gold-primary: #dfb15b;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            /* Fondo metálico pulido oscuro */
+            background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px; /* Mayor espaciado visual */
+        }
+
+        /* Logo de la marca con efecto de brillo pulsante */
+        .brand-logo {
+            color: var(--gold-primary);
+            font-size: 2.8rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            animation: pulseGlow 1.8s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                opacity: 0.6;
+                text-shadow: 0 0 5px rgba(223, 177, 91, 0.2);
+            }
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 20px rgba(223, 177, 91, 0.6);
+            }
+            100% {
+                opacity: 0.6;
+                text-shadow: 0 0 5px rgba(223, 177, 91, 0.2);
+            }
+        }
+
+        /* Spinner / Indicador de carga dorado estilo elegante */
+        .spinner {
+            width: 38px;
+            height: 38px;
+            border: 2px solid rgba(223, 177, 91, 0.15);
+            border-top: 2px solid var(--gold-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-top: 5px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mensaje de redirección espaciado */
+        .status-text {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 400;
+            margin-top: 10px;
+        }
+
+        /* Pantalla de error elegante */
+        .error-card {
+            background: #111113;
+            border: 1px solid var(--gold-primary);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 340px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+        }
+
+        .error-card h2 {
+            color: var(--gold-primary);
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .error-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loader-container" id="loader">
+        <div class="brand-logo">linkea.fy</div>
+        <div class="spinner"></div>
+        <div class="status-text">Redirigiendo...</div>
+    </div>
+
+    <script>
+        async function redirigir() {
+
+
+            // ==========================================
+            // 👇 MODIFICA EL ID AQUÍ (EJ: "0001", "0002", etc.) 👇
+            // ==========================================
+            
+            const currentId = "0005"; 
+            
+            // ==========================================
+
+
+            try {
+                // Buscamos tarjetas.json en la raíz del repositorio
+                const response = await fetch(`../../tarjetas.json?_=${new Date().getTime()}`);
+                if (!response.ok) throw new Error("No se pudo cargar el archivo tarjetas.json");
+                
+                const tarjetas = await response.json();
+                const tarjeta = tarjetas.find(t => t.id === currentId);
+                
+                if (tarjeta && tarjeta.estado === 'activa' && tarjeta.link) {
+                    // Esperamos 800ms para mostrar la animación elegante de la marca
+                    setTimeout(() => {
+                        window.location.replace(tarjeta.link);
+                    }, 800);
+                } else {
+                    document.body.innerHTML = `
+                        <div class="error-card">
+                            <h2>linkea.fy</h2>
+                            <p>Esta tarjeta se encuentra inactiva o no está disponible en este momento.</p>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                console.error(e);
+                document.body.innerHTML = `
+                    <div class="error-card">
+                        <h2>linkea.fy</h2>
+                        <p>Error de conexión al procesar la redirección.</p>
+                    </div>
+                `;
+            }
+        }
+
+        redirigir();
+    </script>
+</body>
+</html>
