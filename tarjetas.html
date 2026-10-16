@@ -93,15 +93,15 @@
         .badge-inactiva { background: rgba(231, 76, 60, 0.15); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.3); }
 
         /* ==========================================================
-           DISEÑO DE TARJETA BLACK GOLD (Esquinas Cuadradas y Fondo Limpio HD)
+           DISEÑO DE TARJETA BLACK GOLD (Estructura Solicitada)
            ========================================================== */
         .physical-card {
             width: 390px;
             height: 230px; /* Proporción real de tarjeta 8.5 x 5 cm */
             background: linear-gradient(135deg, #141414 0%, #050505 100%);
             border: 1.5px solid var(--gold);
-            border-radius: 0px; /* Esquinas totalmente cuadradas */
-            padding: 26px 30px;
+            border-radius: 0px; /* Esquinas cuadradas profesionales */
+            padding: 24px 28px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -118,7 +118,7 @@
 
         .brand-logo {
             color: var(--gold);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
             letter-spacing: 2px;
         }
@@ -129,18 +129,48 @@
             justify-content: space-between;
         }
 
-        .contactless {
-            color: var(--gold);
-            font-size: 1.4rem;
-            opacity: 0.9;
-            transform: rotate(90deg);
-            letter-spacing: -3px;
+        /* Simulación de Chip NFC / Contactless Profesional Dorado */
+        .nfc-chip-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: flex-start;
         }
 
-        /* Contenedor QR con fondo blanco puro para legibilidad instantánea en celulares */
+        .nfc-chip {
+            width: 36px;
+            height: 28px;
+            background: linear-gradient(135deg, #f5e6ca 0%, #dfb15b 50%, #b8860b 100%);
+            border-radius: 4px;
+            position: relative;
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.4), 0 2px 5px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Líneas internas del chip para realismo */
+        .nfc-chip::after {
+            content: "";
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            border: 1px solid rgba(0,0,0,0.25);
+            border-radius: 2px;
+        }
+
+        .contactless-waves {
+            color: var(--gold);
+            font-size: 1.1rem;
+            letter-spacing: -2px;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        /* Contenedor QR con fondo blanco puro para escaneo instantáneo */
         .qr-frame {
             background: #ffffff;
-            padding: 6px;
+            padding: 5px;
             border-radius: 4px;
             display: inline-block;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
@@ -148,8 +178,8 @@
 
         .qr-frame canvas, .qr-frame img {
             display: block;
-            width: 76px !important;
-            height: 76px !important;
+            width: 72px !important;
+            height: 72px !important;
         }
 
         .card-bottom {
@@ -158,11 +188,25 @@
             align-items: flex-end;
         }
 
-        .card-title-label {
-            color: var(--gold-light);
-            font-size: 1.1rem;
-            font-weight: 500;
+        .card-titles-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .card-title-main {
+            color: var(--text-main);
+            font-size: 1.15rem;
+            font-weight: 600;
             letter-spacing: 0.5px;
+        }
+
+        .card-title-sub {
+            color: var(--gold);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
 
         .card-id-label {
@@ -288,19 +332,25 @@
                                 <span class="badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
                             </div>
 
-                            <!-- Tarjeta Física Black Gold HD con esquinas cuadradas -->
+                            <!-- Tarjeta Física Black Gold HD -->
                             <div class="physical-card" id="${cardIdUnico}">
                                 <div class="card-top">
                                     <div class="brand-logo">linkea.fy</div>
                                     <div class="card-id-label">ID: ${tarjeta.id}</div>
                                 </div>
                                 <div class="card-middle">
-                                    <div class="contactless">&#187;&#187;</div>
+                                    <div class="nfc-chip-container">
+                                        <div class="nfc-chip"></div>
+                                        <div class="contactless-waves">&#187;&#187;</div>
+                                    </div>
                                     <div class="qr-frame" id="${qrIdUnico}"></div>
                                 </div>
                                 <div class="card-bottom">
-                                    <div class="card-title-label">Black Gold</div>
-                                    <div class="card-id-label">Professional</div>
+                                    <div class="card-titles-group">
+                                        <div class="card-title-main">${tarjeta.nombre}</div>
+                                        <div class="card-title-sub">Black Gold</div>
+                                    </div>
+                                    <div class="card-id-label">SECURE</div>
                                 </div>
                             </div>
 
@@ -315,11 +365,11 @@
 
                     container.innerHTML += cardHTML;
 
-                    // Generar QR en formato clásico de alto contraste (puntos negros, fondo blanco) para escaneo veloz
+                    // Generar QR de alto contraste para lectura instantánea en celulares
                     new QRCode(document.getElementById(qrIdUnico), {
                         text: urlPermanente,
-                        width: 76,
-                        height: 76,
+                        width: 72,
+                        height: 72,
                         colorDark: "#000000",
                         colorLight: "#ffffff",
                         correctLevel: QRCode.CorrectLevel.H
@@ -349,7 +399,7 @@
             document.getElementById('cardModal').style.display = 'none';
         }
 
-        // 2. Descargar a Fotos en Full HD real con escala 4x
+        // 2. Descargar a Fotos en Full HD real (escala 4x)
         function descargarFoto(cardId, idTarjeta) {
             const elemento = document.getElementById(cardId);
             html2canvas(elemento, { 
@@ -382,7 +432,7 @@
                             background: linear-gradient(135deg, #141414 0%, #050505 100%) !important;
                             border: 1.5px solid #dfb15b;
                             border-radius: 0px;
-                            padding: 26px 30px;
+                            padding: 24px 28px;
                             display: flex;
                             flex-direction: column;
                             justify-content: space-between;
@@ -393,11 +443,32 @@
                         .card-top { display: flex; justify-content: space-between; align-items: center; }
                         .brand-logo { color: #dfb15b; font-size: 1.4rem; font-weight: 700; letter-spacing: 2px; font-family: sans-serif; }
                         .card-middle { display: flex; align-items: center; justify-content: space-between; }
-                        .contactless { color: #dfb15b; font-size: 1.4rem; transform: rotate(90deg); letter-spacing: -3px; }
-                        .qr-frame { background: #ffffff; padding: 6px; border-radius: 4px; display: inline-block; }
+                        .nfc-chip-container { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+                        .nfc-chip {
+                            width: 36px;
+                            height: 28px;
+                            background: linear-gradient(135deg, #f5e6ca 0%, #dfb15b 50%, #b8860b 100%);
+                            border-radius: 4px;
+                            position: relative;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+                        .nfc-chip::after {
+                            content: "";
+                            position: absolute;
+                            width: 80%;
+                            height: 80%;
+                            border: 1px solid rgba(0,0,0,0.25);
+                            border-radius: 2px;
+                        }
+                        .contactless-waves { color: #dfb15b; font-size: 1.1rem; letter-spacing: -2px; margin-top: 4px; }
+                        .qr-frame { background: #ffffff; padding: 5px; border-radius: 4px; display: inline-block; }
                         .qr-frame canvas, .qr-frame img { display: block; width: 72px !important; height: 72px !important; }
                         .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-                        .card-title-label { color: #f5e6ca; font-size: 1.05rem; font-weight: 500; font-family: sans-serif; }
+                        .card-titles-group { display: flex; flex-direction: column; gap: 2px; }
+                        .card-title-main { color: #ffffff; font-size: 1.15rem; font-weight: 600; font-family: sans-serif; }
+                        .card-title-sub { color: #dfb15b; font-size: 0.75rem; font-weight: 500; letter-spacing: 1.5px; font-family: sans-serif; text-transform: uppercase; }
                         .card-id-label { color: #888; font-size: 0.7rem; letter-spacing: 1.5px; font-family: sans-serif; text-transform: uppercase; }
                     </style>
                 </head>
