@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Tarjetas | linkea.fy</title>
-    <!-- Importamos la librería QRCode.js directamente desde CDN para que sea un solo archivo HTML autónomo -->
+    <title>Panel de Administración | linkea.fy</title>
+    <!-- Librerías integradas para QRs y conversión a Imagen (html2canvas) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --bg-color: #0b0b0b;
-            --card-bg: #141414;
-            --gold: #d4af37;
-            --gold-light: #f3e5ab;
+            --bg-color: #080808;
+            --card-dark: #111111;
+            --gold: #dfb15b;
+            --gold-light: #f5e6ca;
             --text-main: #ffffff;
             --text-muted: #888888;
         }
@@ -26,176 +27,263 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            padding: 20px;
+            padding: 30px 20px;
         }
 
         header {
             text-align: center;
             margin-bottom: 40px;
-            padding-top: 20px;
         }
 
         header h1 {
             color: var(--gold);
-            font-size: 2rem;
-            letter-spacing: 2px;
+            font-size: 2.2rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 5px;
+            font-size: 0.95rem;
+            margin-top: 8px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 35px;
         }
 
-        /* DISEÑO DE LA TARJETA BLACK GOLD */
-        .card-preview-wrapper {
-            background: var(--card-bg);
+        .card-box {
+            background: var(--card-dark);
             border: 1px solid #222;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 14px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease;
         }
 
-        .card-info {
+        .card-box:hover {
+            border-color: rgba(223, 177, 91, 0.4);
+        }
+
+        .card-meta {
             width: 100%;
-            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 18px;
         }
 
-        .card-info h3 {
+        .card-meta h3 {
             font-size: 1.1rem;
-            color: var(--text-main);
+            font-weight: 600;
         }
 
-        .card-badge {
-            font-size: 0.75rem;
-            padding: 3px 8px;
-            border-radius: 4px;
+        .badge {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 20px;
             text-transform: uppercase;
             font-weight: bold;
+            letter-spacing: 1px;
         }
 
-        .badge-activa { background: rgba(40, 167, 69, 0.2); color: #28a745; border: 1px solid #28a745; }
-        .badge-inactiva { background: rgba(220, 53, 69, 0.2); color: #dc3545; border: 1px solid #dc3545; }
+        .badge-activa { background: rgba(40, 167, 69, 0.15); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.3); }
+        .badge-inactiva { background: rgba(231, 76, 60, 0.15); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.3); }
 
-        /* Mockup Fisico de la Tarjeta */
+        /* ==========================================
+           DISEÑO DE TARJETA BLACK GOLD (8.5 x 5 cm)
+           Proporción real de tarjeta de crédito (85mm x 50mm)
+           ========================================== */
         .physical-card {
-            width: 300px;
-            height: 180px;
-            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-            border: 1px solid var(--gold);
-            border-radius: 10px;
-            padding: 15px;
+            width: 340px;
+            height: 200px;
+            background: radial-gradient(circle at center, #1c1c1c 0%, #0d0d0d 100%);
+            border: 1.5px solid var(--gold);
+            border-radius: 12px;
+            padding: 20px 24px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
-            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(223, 177, 91, 0.12);
+            margin-bottom: 22px;
+            overflow: hidden;
         }
 
-        .card-header-brand {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: var(--gold);
-            letter-spacing: 1px;
+        /* Textura simulada sutil tipo tarjeta premium */
+        .physical-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.04"/%3E%3C/svg%3E');
+            pointer-events: none;
         }
 
-        .card-body-content {
+        .card-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .qr-container {
-            background: #fff;
-            padding: 6px;
-            border-radius: 4px;
-            display: inline-block;
+        .brand-logo {
+            color: var(--gold);
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
         }
 
-        .qr-container img {
-            display: block;
-            width: 65px !important;
-            height: 65px !important;
+        .card-middle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .nfc-icon {
+        .contactless {
             color: var(--gold);
             font-size: 1.2rem;
-            opacity: 0.8;
+            opacity: 0.85;
+            transform: rotate(90deg);
+            letter-spacing: -3px;
         }
 
-        .card-footer-id {
-            font-size: 0.7rem;
+        .qr-frame {
+            background: #ffffff;
+            padding: 5px;
+            border-radius: 6px;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        .qr-frame img {
+            display: block;
+            width: 68px !important;
+            height: 68px !important;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .card-title-label {
+            color: var(--gold-light);
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .card-id-label {
             color: var(--text-muted);
-            text-align: right;
-            letter-spacing: 1px;
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
 
-        /* Botón de Descarga PDF / Imprimir */
-        .btn-download {
+        /* ==========================================
+           BOTONES DE ACCIÓN INDIVIDUALES
+           ========================================== */
+        .actions-grid {
             width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn {
             background: transparent;
             color: var(--gold);
             border: 1px solid var(--gold);
             padding: 10px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.78rem;
             text-transform: uppercase;
-            font-size: 0.85rem;
+            transition: all 0.25s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        .btn-download:hover {
+        .btn:hover {
             background: var(--gold);
             color: var(--bg-color);
         }
 
-        /* Estilos específicos para impresión / PDF limpio */
-        @media print {
-            body { background: #fff; color: #000; }
-            header, .btn-download, .card-info { display: none; }
-            .container { display: block; }
-            .card-preview-wrapper { border: none; background: none; box-shadow: none; page-break-inside: avoid; margin-bottom: 40px; }
-            .physical-card { border: 2px solid #000; background: #111 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .btn-full {
+            grid-column: span 2;
         }
+
+        /* Modal para Ver Tarjeta en Grande */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--card-dark);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid var(--gold);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            max-width: 90%;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px; right: 20px;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .close-modal:hover { color: var(--text-main); }
     </style>
 </head>
 <body>
 
     <header>
         <h1>linkea.fy</h1>
-        <p>Panel de Control y Generación de Tarjetas Físicas</p>
+        <p>Panel de Control • Tarjetas Black Gold (8.5 x 5 cm)</p>
     </header>
 
     <div class="container" id="tarjetas-container">
-        <!-- Las tarjetas se cargarán dinámicamente aquí mediante JavaScript -->
+        <!-- Se cargan dinámicamente -->
+    </div>
+
+    <!-- Modal para ver tarjeta ampliada -->
+    <div class="modal" id="cardModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="cerrarModal()">&times;</span>
+            <h3 style="color: var(--gold); margin-bottom: 20px;" id="modalTitle">Vista Previa</h3>
+            <div id="modalCardContainer"></div>
+        </div>
     </div>
 
     <script>
-        // CONFIGURACIÓN: Obtiene automáticamente la URL base de tu GitHub Pages
-        // Ejemplo: Si tu sitio es https://usuario.github.io/repo/, detectará esa ruta base.
         const BASE_URL = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) + '/';
 
         async function cargarTarjetas() {
             try {
-                // Evitamos caché añadiendo marca de tiempo
                 const response = await fetch(`tarjetas.json?_=${new Date().getTime()}`);
                 if (!response.ok) throw new Error('No se pudo cargar tarjetas.json');
                 
@@ -204,38 +292,49 @@
                 container.innerHTML = '';
 
                 tarjetas.forEach(tarjeta => {
-                    // URL fija y permanente que contendrá el código QR físico
                     const urlPermanente = `${BASE_URL}t/${tarjeta.id}/`;
+                    const cardIdUnico = `card-${tarjeta.id}`;
+                    const qrIdUnico = `qr-${tarjeta.id}`;
 
-                    // Estructura HTML para cada tarjeta en el panel
                     const cardHTML = `
-                        <div class="card-preview-wrapper">
-                            <div class="card-info">
+                        <div class="card-box">
+                            <div class="card-meta">
                                 <h3>${tarjeta.nombre}</h3>
-                                <span class="card-badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
+                                <span class="badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
                             </div>
 
-                            <!-- Vista previa física de la tarjeta Black Gold -->
-                            <div class="physical-card">
-                                <div class="card-header-brand">linkea.fy</div>
-                                <div class="card-body-content">
-                                    <div class="nfc-icon">)))</div>
-                                    <div class="qr-container" id="qr-${tarjeta.id}"></div>
+                            <!-- Tarjeta Física Real Black Gold (ID único para captura individual) -->
+                            <div class="physical-card" id="${cardIdUnico}">
+                                <div class="card-top">
+                                    <div class="brand-logo">linkea.fy</div>
+                                    <div class="card-id-label">ID: ${tarjeta.id}</div>
                                 </div>
-                                <div class="card-footer-id">ID: ${tarjeta.id}</div>
+                                <div class="card-middle">
+                                    <div class="contactless">&#187;&#187;</div>
+                                    <div class="qr-frame" id="${qrIdUnico}"></div>
+                                </div>
+                                <div class="card-bottom">
+                                    <div class="card-title-label">Black Gold</div>
+                                    <div class="card-id-label">Authorized</div>
+                                </div>
                             </div>
 
-                            <button class="btn-download" onclick="window.print()">Descargar / Imprimir PDF</button>
+                            <!-- Opciones individuales -->
+                            <div class="actions-grid">
+                                <button class="btn" onclick="verTarjeta('${cardIdUnico}', '${tarjeta.nombre}')">Ver Tarjeta</button>
+                                <button class="btn" onclick="descargarFoto('${cardIdUnico}', '${tarjeta.id}')">Descargar a Fotos</button>
+                                <button class="btn btn-full" onclick="descargarPDF('${cardIdUnico}', '${tarjeta.nombre}')">Imprimir / Guardar PDF</button>
+                            </div>
                         </div>
                     `;
 
                     container.innerHTML += cardHTML;
 
-                    // Generar el código QR apuntando a la URL permanente de GitHub Pages
-                    new QRCode(document.getElementById(`qr-${tarjeta.id}`), {
+                    // Generar QR dentro del contenedor correspondiente
+                    new QRCode(document.getElementById(qrIdUnico), {
                         text: urlPermanente,
-                        width: 65,
-                        height: 65,
+                        width: 68,
+                        height: 68,
                         colorDark: "#000000",
                         colorLight: "#ffffff",
                         correctLevel: QRCode.CorrectLevel.H
@@ -245,10 +344,83 @@
             } catch (error) {
                 console.error('Error:', error);
                 document.getElementById('tarjetas-container').innerHTML = `
-                    <p style="color: #ff5555; text-align: center; grid-column: 1/-1;">
-                        Error al cargar las tarjetas. Asegúrate de que <strong>tarjetas.json</strong> está en la raíz y la web está publicada en GitHub Pages.
+                    <p style="color: #e74c3c; text-align: center; grid-column: 1/-1;">
+                        Error al cargar las tarjetas. Verifica que <strong>tarjetas.json</strong> esté en la raíz del repositorio.
                     </p>`;
             }
+        }
+
+        // 1. Ver Tarjeta en Modal
+        function verTarjeta(cardId, nombre) {
+            const original = document.getElementById(cardId);
+            const clone = original.cloneNode(true);
+            document.getElementById('modalCardContainer').innerHTML = '';
+            document.getElementById('modalCardContainer').appendChild(clone);
+            document.getElementById('modalTitle').innerText = nombre;
+            document.getElementById('cardModal').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('cardModal').style.display = 'none';
+        }
+
+        // 2. Descargar a Fotos de forma individual usando html2canvas
+        function descargarFoto(cardId, idTarjeta) {
+            const elemento = document.getElementById(cardId);
+            html2canvas(elemento, { scale: 3, backgroundColor: null }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `tarjeta-${idTarjeta}-linkeafy.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        // 3. Imprimir / Guardar a PDF de manera individual
+        function descargarPDF(cardId, nombre) {
+            const elemento = document.getElementById(cardId).outerHTML;
+            const ventanaPrint = window.open('', '_blank', 'width=800,height=600');
+            ventanaPrint.document.write(`
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Imprimir Tarjeta - ${nombre}</title>
+                    <style>
+                        body { background: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+                        .physical-card {
+                            width: 85mm;
+                            height: 50mm;
+                            background: radial-gradient(circle at center, #1c1c1c 0%, #0d0d0d 100%) !important;
+                            border: 1.5px solid #dfb15b;
+                            border-radius: 12px;
+                            padding: 20px 24px;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            position: relative;
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
+                        }
+                        .card-top { display: flex; justify-content: space-between; align-items: center; }
+                        .brand-logo { color: #dfb15b; font-size: 1.25rem; font-weight: 700; letter-spacing: 1.5px; font-family: sans-serif; }
+                        .card-middle { display: flex; align-items: center; justify-content: space-between; }
+                        .contactless { color: #dfb15b; font-size: 1.2rem; transform: rotate(90deg); letter-spacing: -3px; }
+                        .qr-frame { background: #ffffff; padding: 5px; border-radius: 6px; display: inline-block; }
+                        .qr-frame img { display: block; width: 68px !important; height: 68px !important; }
+                        .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+                        .card-title-label { color: #f5e6ca; font-size: 0.95rem; font-weight: 500; font-family: sans-serif; }
+                        .card-id-label { color: #888; font-size: 0.65rem; letter-spacing: 1.5px; font-family: sans-serif; text-transform: uppercase; }
+                    </style>
+                </head>
+                <body>
+                    ${elemento}
+                    <script>
+                        window.onload = function() { window.print(); window.close(); }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            ventanaPrint.document.close();
         }
 
         document.addEventListener('DOMContentLoaded', cargarTarjetas);
