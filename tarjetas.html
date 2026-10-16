@@ -9,62 +9,65 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --bg-color: #080808;
-            --card-dark: #111111;
-            --gold: #dfb15b;
-            --gold-light: #f5e6ca;
+            --bg-color: #050505;
+            --card-dark: #0d0d0d;
+            --gold: #d4af37;
+            --gold-light: #f3e5ab;
             --text-main: #ffffff;
-            --text-muted: #888888;
+            --text-muted: #777777;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            padding: 30px 20px;
+            padding: 40px 20px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
         }
 
         header h1 {
             color: var(--gold);
-            font-size: 2.2rem;
-            letter-spacing: 3px;
+            font-size: 2.4rem;
+            letter-spacing: 4px;
             text-transform: uppercase;
+            font-weight: 300;
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-top: 8px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 35px;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
         }
 
         .card-box {
             background: var(--card-dark);
-            border: 1px solid #222;
-            border-radius: 14px;
-            padding: 24px;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 28px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
         }
 
         .card-meta {
@@ -72,55 +75,58 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
         .card-meta h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            color: #ddd;
         }
 
         .badge {
-            font-size: 0.7rem;
-            padding: 4px 10px;
+            font-size: 0.65rem;
+            padding: 4px 12px;
             border-radius: 20px;
             text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 1px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
         }
 
-        .badge-activa { background: rgba(40, 167, 69, 0.15); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.3); }
-        .badge-inactiva { background: rgba(231, 76, 60, 0.15); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.3); }
+        .badge-activa { background: rgba(40, 167, 69, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
+        .badge-inactiva { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
 
         /* ==========================================================
-           DISEÑO SUPREMO BLACK GOLD (8.5 x 5 cm - Estilo Bancario)
+           DISEÑO SUPREMO EMPRESARIAL - BLACK CARD LEVEL (8.5 x 5 cm)
            ========================================================== */
         .physical-card {
-            width: 390px;
-            height: 230px;
-            background: linear-gradient(135deg, #121212 0%, #040404 100%);
-            border: 1.5px solid var(--gold);
-            border-radius: 0px; /* Esquinas cuadradas de alta gama */
-            padding: 26px 30px;
+            width: 410px;
+            height: 240px;
+            background: linear-gradient(135deg, #111111 0%, #030303 100%);
+            border: 1px solid var(--gold);
+            border-radius: 8px; /* Ligeramente estilizada con elegancia de tarjeta de metal */
+            padding: 30px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            box-shadow: 0 12px 35px rgba(223, 177, 91, 0.2);
-            margin-bottom: 22px;
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.15), inset 0 0 15px rgba(255,255,255,0.03);
+            margin-bottom: 25px;
         }
 
         .card-top {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
         }
 
         .brand-logo {
             color: var(--gold);
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 2px;
+            font-size: 1.3rem;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: lowercase;
         }
 
         .card-middle {
@@ -129,67 +135,53 @@
             justify-content: space-between;
         }
 
-        /* Chip Bancario Profesional con Efecto Realista 3D Gold */
-        .nfc-chip-container {
+        /* Chip Bancario Empresarial Avanzado (Estilo EMV Realista) */
+        .chip-box {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             align-items: flex-start;
         }
 
-        .bank-chip {
-            width: 42px;
-            height: 32px;
-            background: linear-gradient(135deg, #f9f1df 0%, #dfb15b 40%, #996515 100%);
-            border-radius: 5px;
+        .bank-chip-pro {
+            width: 45px;
+            height: 35px;
+            background: linear-gradient(135deg, #ebd197 0%, #d4af37 50%, #9a7b20 100%);
+            border-radius: 4px;
             position: relative;
-            box-shadow: inset 0 1px 3px rgba(255,255,255,0.6), 0 3px 6px rgba(0,0,0,0.4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.7), 0 4px 8px rgba(0,0,0,0.5);
             overflow: hidden;
         }
 
-        /* Líneas de contacto del chip de banco */
-        .bank-chip::before {
+        .bank-chip-pro::before {
             content: "";
             position: absolute;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: 
-                linear-gradient(90deg, transparent 45%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0.3) 55%, transparent 55%),
-                linear-gradient(0deg, transparent 45%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0.3) 55%, transparent 55%);
+                linear-gradient(90deg, transparent 42%, rgba(0,0,0,0.25) 42%, rgba(0,0,0,0.25) 58%, transparent 58%),
+                linear-gradient(0deg, transparent 42%, rgba(0,0,0,0.25) 42%, rgba(0,0,0,0.25) 58%, transparent 58%);
         }
 
-        .bank-chip::after {
-            content: "";
-            position: absolute;
-            width: 60%;
-            height: 60%;
-            border: 1px solid rgba(0,0,0,0.35);
-            border-radius: 2px;
-        }
-
-        .contactless-waves {
+        .contactless-icon {
             color: var(--gold);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             letter-spacing: -2px;
-            opacity: 0.9;
+            opacity: 0.8;
         }
 
-        /* Contenedor QR de alto contraste */
+        /* Marco QR Corporativo minimalista */
         .qr-frame {
             background: #ffffff;
-            padding: 6px;
-            border-radius: 4px;
+            padding: 5px;
+            border-radius: 3px;
             display: inline-block;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
         }
 
         .qr-frame canvas, .qr-frame img {
             display: block;
-            width: 76px !important;
-            height: 76px !important;
+            width: 74px !important;
+            height: 74px !important;
         }
 
         .card-bottom {
@@ -201,22 +193,24 @@
         .card-titles-group {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 3px;
         }
 
         .card-title-main {
             color: var(--text-main);
-            font-size: 1.2rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .card-title-sub {
             color: var(--gold);
-            font-size: 0.75rem;
-            font-weight: 500;
-            letter-spacing: 1.5px;
+            font-size: 0.65rem;
+            font-weight: 400;
+            letter-spacing: 3px;
             text-transform: uppercase;
+            opacity: 0.85;
         }
 
         /* ==========================================
@@ -226,20 +220,21 @@
             width: 100%;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
         }
 
         .btn {
             background: transparent;
             color: var(--gold);
             border: 1px solid var(--gold);
-            padding: 10px;
-            border-radius: 8px;
+            padding: 11px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.78rem;
+            font-weight: 500;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            transition: all 0.25s ease;
+            transition: all 0.3s ease;
             text-align: center;
             text-decoration: none;
             display: flex;
@@ -251,6 +246,7 @@
         .btn:hover {
             background: var(--gold);
             color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
 
         .btn-full {
@@ -262,7 +258,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.88);
+            background: rgba(0,0,0,0.9);
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -271,8 +267,8 @@
 
         .modal-content {
             background: var(--card-dark);
-            padding: 35px;
-            border-radius: 16px;
+            padding: 40px;
+            border-radius: 12px;
             border: 1px solid var(--gold);
             display: flex;
             flex-direction: column;
@@ -295,7 +291,7 @@
 
     <header>
         <h1>linkea.fy</h1>
-        <p>Panel de Control • Tarjetas Black Gold HD (8.5 x 5 cm)</p>
+        <p>Corporate Card Management • Black Gold Edition</p>
     </header>
 
     <div class="container" id="tarjetas-container">
@@ -306,7 +302,7 @@
     <div class="modal" id="cardModal">
         <div class="modal-content">
             <span class="close-modal" onclick="cerrarModal()">&times;</span>
-            <h3 style="color: var(--gold); margin-bottom: 20px;" id="modalTitle">Vista Previa</h3>
+            <h3 style="color: var(--gold); margin-bottom: 25px; font-weight: 400; letter-spacing: 2px;" id="modalTitle">Vista Previa</h3>
             <div id="modalCardContainer"></div>
         </div>
     </div>
@@ -331,46 +327,50 @@
                     const cardHTML = `
                         <div class="card-box">
                             <div class="card-meta">
-                                <h3>${tarjeta.nombre}</h3>
+                                <h3>ID: ${tarjeta.id} - ${tarjeta.nombre}</h3>
                                 <span class="badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
                             </div>
 
-                            <!-- Tarjeta Física Suprema Black Gold HD -->
+                            <!-- Tarjeta Física Suprema Black Gold (Sin nombre de negocio, solo marca y edición) -->
                             <div class="physical-card" id="${cardIdUnico}">
                                 <div class="card-top">
                                     <div class="brand-logo">linkea.fy</div>
                                 </div>
                                 <div class="card-middle">
-                                    <div class="nfc-chip-container">
-                                        <div class="bank-chip"></div>
-                                        <div class="contactless-waves">&#187;&#187;</div>
+                                    <div class="chip-box">
+                                        <div class="bank-chip-pro"></div>
+                                        <div class="contactless-icon">&#187;&#187;</div>
                                     </div>
                                     <div class="qr-frame" id="${qrIdUnico}"></div>
                                 </div>
                                 <div class="card-bottom">
                                     <div class="card-titles-group">
-                                        <div class="card-title-main">${tarjeta.nombre}</div>
-                                        <div class="card-title-sub">Black Gold</div>
+                                        <div class="card-title-main">Black Gold</div>
+                                        <div class="card-title-sub">Authorized Edition</div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Opciones individuales -->
                             <div class="actions-grid">
-                                <button class="btn" onclick="verTarjeta('${cardIdUnico}', '${tarjeta.nombre}')">Ver Tarjeta</button>
+                                <button class="btn" onclick="verTarjeta('${cardIdUnico}', 'Tarjeta ID: ${tarjeta.id}')">Ver Tarjeta</button>
                                 <button class="btn" onclick="descargarFoto('${cardIdUnico}', '${tarjeta.id}')">Descargar a Fotos</button>
-                                <button class="btn btn-full" onclick="descargarPDF('${cardIdUnico}', '${tarjeta.nombre}')">Imprimir / Guardar PDF</button>
+                                <button class="btn btn-full" onclick="descargarPDF('${cardIdUnico}', 'Tarjeta-${tarjeta.id}')">Imprimir / Guardar PDF</button>
                             </div>
                         </div>
                     `;
 
                     container.innerHTML += cardHTML;
 
+                    // CORRECCIÓN CLAVE: Limpiar el contenedor antes de generar el QR para evitar que se solapen o desaparezcan al haber múltiples tarjetas
+                    const qrContainer = document.getElementById(qrIdUnico);
+                    qrContainer.innerHTML = "";
+
                     // Generar QR de alto contraste para lectura instantánea
-                    new QRCode(document.getElementById(qrIdUnico), {
+                    new QRCode(qrContainer, {
                         text: urlPermanente,
-                        width: 76,
-                        height: 76,
+                        width: 74,
+                        height: 74,
                         colorDark: "#000000",
                         colorLight: "#ffffff",
                         correctLevel: QRCode.CorrectLevel.H
@@ -415,7 +415,7 @@
             });
         }
 
-        // 3. Imprimir / Guardar PDF profesional a 8.5 x 5 cm con esquinas cuadradas
+        // 3. Imprimir / Guardar PDF profesional a 8.5 x 5 cm
         function descargarPDF(cardId, nombre) {
             const elemento = document.getElementById(cardId).outerHTML;
             const ventanaPrint = window.open('', '_blank', 'width=900,height=700');
@@ -424,16 +424,16 @@
                 <html lang="es">
                 <head>
                     <meta charset="UTF-8">
-                    <title>Imprimir Tarjeta - ${nombre}</title>
+                    <title>Imprimir ${nombre}</title>
                     <style>
                         body { background: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
                         .physical-card {
                             width: 85mm;
                             height: 50mm;
-                            background: linear-gradient(135deg, #121212 0%, #040404 100%) !important;
-                            border: 1.5px solid #dfb15b;
-                            border-radius: 0px;
-                            padding: 26px 30px;
+                            background: linear-gradient(135deg, #111111 0%, #030303 100%) !important;
+                            border: 1px solid #d4af37;
+                            border-radius: 8px;
+                            padding: 30px;
                             display: flex;
                             flex-direction: column;
                             justify-content: space-between;
@@ -441,44 +441,32 @@
                             -webkit-print-color-adjust: exact;
                             print-color-adjust: exact;
                         }
-                        .card-top { display: flex; justify-content: space-between; align-items: center; }
-                        .brand-logo { color: #dfb15b; font-size: 1.5rem; font-weight: 700; letter-spacing: 2px; font-family: sans-serif; }
+                        .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+                        .brand-logo { color: #d4af37; font-size: 1.3rem; font-weight: 400; letter-spacing: 3px; font-family: sans-serif; text-transform: lowercase; }
                         .card-middle { display: flex; align-items: center; justify-content: space-between; }
-                        .nfc-chip-container { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
-                        .bank-chip {
-                            width: 42px;
-                            height: 32px;
-                            background: linear-gradient(135deg, #f9f1df 0%, #dfb15b 40%, #996515 100%);
-                            border-radius: 5px;
+                        .chip-box { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+                        .bank-chip-pro {
+                            width: 45px;
+                            height: 35px;
+                            background: linear-gradient(135deg, #ebd197 0%, #d4af37 50%, #9a7b20 100%);
+                            border-radius: 4px;
                             position: relative;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
                         }
-                        .bank-chip::before {
+                        .bank-chip-pro::before {
                             content: "";
                             position: absolute;
-                            width: 100%;
-                            height: 100%;
+                            inset: 0;
                             background: 
-                                linear-gradient(90deg, transparent 45%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0.3) 55%, transparent 55%),
-                                linear-gradient(0deg, transparent 45%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0.3) 55%, transparent 55%);
+                                linear-gradient(90deg, transparent 42%, rgba(0,0,0,0.25) 42%, rgba(0,0,0,0.25) 58%, transparent 58%),
+                                linear-gradient(0deg, transparent 42%, rgba(0,0,0,0.25) 42%, rgba(0,0,0,0.25) 58%, transparent 58%);
                         }
-                        .bank-chip::after {
-                            content: "";
-                            position: absolute;
-                            width: 60%;
-                            height: 60%;
-                            border: 1px solid rgba(0,0,0,0.35);
-                            border-radius: 2px;
-                        }
-                        .contactless-waves { color: #dfb15b; font-size: 1.2rem; letter-spacing: -2px; }
-                        .qr-frame { background: #ffffff; padding: 6px; border-radius: 4px; display: inline-block; }
-                        .qr-frame canvas, .qr-frame img { display: block; width: 76px !important; height: 76px !important; }
+                        .contactless-icon { color: #d4af37; font-size: 1.1rem; letter-spacing: -2px; }
+                        .qr-frame { background: #ffffff; padding: 5px; border-radius: 3px; display: inline-block; }
+                        .qr-frame canvas, .qr-frame img { display: block; width: 74px !important; height: 74px !important; }
                         .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-                        .card-titles-group { display: flex; flex-direction: column; gap: 2px; }
-                        .card-title-main { color: #ffffff; font-size: 1.2rem; font-weight: 600; font-family: sans-serif; }
-                        .card-title-sub { color: #dfb15b; font-size: 0.75rem; font-weight: 500; letter-spacing: 1.5px; font-family: sans-serif; text-transform: uppercase; }
+                        .card-titles-group { display: flex; flex-direction: column; gap: 3px; }
+                        .card-title-main { color: #ffffff; font-size: 1.1rem; font-weight: 500; letter-spacing: 2px; font-family: sans-serif; text-transform: uppercase; }
+                        .card-title-sub { color: #d4af37; font-size: 0.65rem; font-weight: 400; letter-spacing: 3px; font-family: sans-serif; text-transform: uppercase; }
                     </style>
                 </head>
                 <body>
