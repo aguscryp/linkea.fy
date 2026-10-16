@@ -10,5 +10,12 @@
     "nombre": "Lavadero Premium",
     "link": "https://aguscryp.github.io/linkea.fy/tarjetas.html",
     "estado": "activa"
+  },
+
+   {
+    "id": "0003",
+    "nombre": "Coppetti",
+    "link": "https://aguscryp.github.io/linkea.fy/tarjetas.html",
+    "estado": "activa"
   }
 ]
