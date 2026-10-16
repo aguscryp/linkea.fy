@@ -1,1 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Tarjetas | linkea.fy</title>
+    <!-- Importamos la librería QRCode.js directamente desde CDN para que sea un solo archivo HTML autónomo -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0b0b0b;
+            --card-bg: #141414;
+            --gold: #d4af37;
+            --gold-light: #f3e5ab;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        header h1 {
+            color: var(--gold);
+            font-size: 2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        /* DISEÑO DE LA TARJETA BLACK GOLD */
+        .card-preview-wrapper {
+            background: var(--card-bg);
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+
+        .card-info {
+            width: 100%;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-info h3 {
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .card-badge {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .badge-activa { background: rgba(40, 167, 69, 0.2); color: #28a745; border: 1px solid #28a745; }
+        .badge-inactiva { background: rgba(220, 53, 69, 0.2); color: #dc3545; border: 1px solid #dc3545; }
+
+        /* Mockup Fisico de la Tarjeta */
+        .physical-card {
+            width: 300px;
+            height: 180px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+            margin-bottom: 20px;
+        }
+
+        .card-header-brand {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+
+        .card-body-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .qr-container {
+            background: #fff;
+            padding: 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .qr-container img {
+            display: block;
+            width: 65px !important;
+            height: 65px !important;
+        }
+
+        .nfc-icon {
+            color: var(--gold);
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .card-footer-id {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: right;
+            letter-spacing: 1px;
+        }
+
+        /* Botón de Descarga PDF / Imprimir */
+        .btn-download {
+            width: 100%;
+            background: transparent;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .btn-download:hover {
+            background: var(--gold);
+            color: var(--bg-color);
+        }
+
+        /* Estilos específicos para impresión / PDF limpio */
+        @media print {
+            body { background: #fff; color: #000; }
+            header, .btn-download, .card-info { display: none; }
+            .container { display: block; }
+            .card-preview-wrapper { border: none; background: none; box-shadow: none; page-break-inside: avoid; margin-bottom: 40px; }
+            .physical-card { border: 2px solid #000; background: #111 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>linkea.fy</h1>
+        <p>Panel de Control y Generación de Tarjetas Físicas</p>
+    </header>
+
+    <div class="container" id="tarjetas-container">
+        <!-- Las tarjetas se cargarán dinámicamente aquí mediante JavaScript -->
+    </div>
+
+    <script>
+        // CONFIGURACIÓN: Obtiene automáticamente la URL base de tu GitHub Pages
+        // Ejemplo: Si tu sitio es https://usuario.github.io/repo/, detectará esa ruta base.
+        const BASE_URL = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) + '/';
+
+        async function cargarTarjetas() {
+            try {
+                // Evitamos caché añadiendo marca de tiempo
+                const response = await fetch(`tarjetas.json?_=${new Date().getTime()}`);
+                if (!response.ok) throw new Error('No se pudo cargar tarjetas.json');
+                
+                const tarjetas = await response.json();
+                const container = document.getElementById('tarjetas-container');
+                container.innerHTML = '';
+
+                tarjetas.forEach(tarjeta => {
+                    // URL fija y permanente que contendrá el código QR físico
+                    const urlPermanente = `${BASE_URL}t/${tarjeta.id}/`;
+
+                    // Estructura HTML para cada tarjeta en el panel
+                    const cardHTML = `
+                        <div class="card-preview-wrapper">
+                            <div class="card-info">
+                                <h3>${tarjeta.nombre}</h3>
+                                <span class="card-badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
+                            </div>
+
+                            <!-- Vista previa física de la tarjeta Black Gold -->
+                            <div class="physical-card">
+                                <div class="card-header-brand">linkea.fy</div>
+                                <div class="card-body-content">
+                                    <div class="nfc-icon">)))</div>
+                                    <div class="qr-container" id="qr-${tarjeta.id}"></div>
+                                </div>
+                                <div class="card-footer-id">ID: ${tarjeta.id}</div>
+                            </div>
+
+                            <button class="btn-download" onclick="window.print()">Descargar / Imprimir PDF</button>
+                        </div>
+                    `;
+
+                    container.innerHTML += cardHTML;
+
+                    // Generar el código QR apuntando a la URL permanente de GitHub Pages
+                    new QRCode(document.getElementById(`qr-${tarjeta.id}`), {
+                        text: urlPermanente,
+                        width: 65,
+                        height: 65,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                });
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('tarjetas-container').innerHTML = `
+                    <p style="color: #ff5555; text-align: center; grid-column: 1/-1;">
+                        Error al cargar las tarjetas. Asegúrate de que <strong>tarjetas.json</strong> está en la raíz y la web está publicada en GitHub Pages.
+                    </p>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarTarjetas);
+    </script>
+</body>
+</html>
