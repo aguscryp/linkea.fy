@@ -35,6 +35,8 @@
             text-align: center;
             overflow-x: hidden;
             position: relative;
+            /* Evita comportamientos extraños de zoom en móviles */
+            touch-action: manipulation;
         }
 
         /* Aura ambiental multicapa */
@@ -314,7 +316,7 @@
 
     <div class="container">
         <div class="brand-logo">linkea.fy</div>
-        <div class="card-id-badge" id="badgeId">Cargando ID...</div>
+        <div class="card-id-badge">Espacio Disponible en Stock</div>
 
         <!-- Tarjeta Interactiva 3D HD -->
         <div class="card-tilt-container" id="tiltContainer">
@@ -342,70 +344,14 @@
         <h1>Tu marca merece este nivel</h1>
         <p>Explora el acabado metálico de alta gama interactuando con la tarjeta en 3D. Gírala para descubrir su diseño integral.</p>
 
-        <!-- Botón de WhatsApp con ID dinámico -->
-        <a id="whatsappBtn" href="#" target="_blank" class="btn-claim">
+        <!-- Botón de WhatsApp general para reclamo de stock -->
+        <a id="whatsappBtn" href="https://wa.me/TU_NUMERO_DE_WHATSAPP?text=Hola,%20quiero%20reclamar%20y%20activar%20una%20tarjeta%20linkea.fy%20en%20stock." target="_blank" class="btn-claim">
             <i class="fa-brands fa-whatsapp"></i> Reclamar esta Tarjeta
         </a>
     </div>
 
     <script>
-        // =========================================================================
-        // DETECCIÓN ROBUSTA DEL ID DESDE LA URL Y SINCRONIZACIÓN CON tarjetas.json
-        // =========================================================================
-        function obtenerIdCard() {
-            // 1. Intentar buscar por parámetros GET (ej: ?id=0045 o ?card=0045)
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('id')) return urlParams.get('id');
-            if (urlParams.has('card')) return urlParams.get('card');
-
-            // 2. Extraer de la ruta de carpetas (ej: /t/0045/index.html o /t/0045)
-            const segments = window.location.pathname.split('/').filter(Boolean);
-            
-            // Recorrer los segmentos de atrás hacia adelante buscando un identificador válido
-            for (let i = segments.length - 1; i >= 0; i--) {
-                let seg = segments[i].toLowerCase();
-                // Ignorar extensiones o palabras clave comunes del sistema
-                if (seg !== 'index.html' && seg !== 't' && seg !== '' && !seg.includes('.')) {
-                    return segments[i];
-                }
-            }
-            return "0001"; // Valor por defecto si no encuentra nada
-        }
-
-        const currentId = obtenerIdCard();
-        document.getElementById('badgeId').innerText = `Tarjeta #${currentId}`;
-
-        // =========================================================================
-        // CONSULTA EN TIEMPO REAL A tarjetas.json (UBICADO EN LA RAIZ O EN /t/)
-        // =========================================================================
-        async function sincronizarConJson() {
-            try {
-                // Buscamos el JSON de forma ascendente según la estructura típica
-                const respuesta = await fetch('../../tarjetas.json').catch(() => fetch('../tarjetas.json')).catch(() => fetch('tarjetas.json'));
-                
-                if (respuesta && respuesta.ok) {
-                    const data = await respuesta.json();
-                    let tarjetaData = null;
-
-                    if (Array.isArray(data)) {
-                        tarjetaData = data.find(item => item.id == currentId);
-                    } else if (typeof data === 'object' && data !== null) {
-                        tarjetaData = data[currentId];
-                    }
-
-                    // Si en el JSON se define un destino activo para este ID, opcionalmente puedes redirigir
-                    if (tarjetaData && tarjetaData.urlDestino && tarjetaData.urlDestino !== "") {
-                        // window.location.href = tarjetaData.urlDestino; // Descomentar si deseas redirección automática al activarse
-                    }
-                }
-            } catch (e) {
-                console.log("Funcionando con ID local en modo stock:", currentId);
-            }
-        }
-
-        sincronizarConJson();
-
-        // Generar el código QR dinámico apuntando a la URL actual exacto de la tarjeta
+        // Generar el código QR dinámico apuntando directamente a la URL actual
         const currentUrl = window.location.href;
         new QRCode(document.getElementById("qrContainer"), {
             text: currentUrl,
@@ -415,10 +361,6 @@
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
         });
-
-        // Configurar enlace de WhatsApp con el ID detectado automáticamente
-        const mensajeWa = encodeURIComponent(`Hola, tengo en mis manos la tarjeta linkea.fy con el ID #${currentId} y quiero activarla para mi negocio.`);
-        document.getElementById('whatsappBtn').href = `https://wa.me/TU_NUMERO_DE_WHATSAPP?text=${mensajeWa}`;
 
         // ==========================================
         // CONTROL 3D TILT & GIRO ÉPICO TÁCTIL SEGURO
@@ -456,8 +398,8 @@
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
 
-            currentRotateX = -((y - centerY) / centerY) * 12;
-            currentRotateY = ((x - centerX) / centerX) * 12;
+            currentRotateX = -((y - centerY) / centerY) * 10;
+            currentRotateY = ((x - centerX) / centerX) * 10;
 
             updateTransform();
         }
@@ -473,13 +415,13 @@
             updateTransform();
         });
 
+        // Control táctil optimizado y seguro para evitar zooms indeseados o bloqueos
         container.addEventListener('touchmove', (e) => {
-            e.preventDefault(); 
             if (e.touches.length > 0) {
                 const touch = e.touches[0];
                 handleMove(touch.clientX, touch.clientY);
             }
-        }, { passive: false });
+        }, { passive: true });
 
         container.addEventListener('touchend', () => {
             if (scene.classList.contains('animating-flip')) return;
