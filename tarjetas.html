@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración | linkea.fy</title>
-    <!-- Librerías para QRs de lectura instantánea y exportación HD -->
+    <!-- Librerías para QRs y exportación HD -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --bg-color: #000000;
             --card-dark: #0a0a0a;
-            --gold-primary: #ddb668;
+            --gold-primary: #dfb15b;
             --text-main: #ffffff;
             --text-muted: #777777;
         }
@@ -97,12 +97,13 @@
         .badge-inactiva { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
 
         /* ==========================================================
-           TARJETA FÍSICA IDÉNTICA A TU MUESTRA (8.5 x 5 cm)
+           TARJETA FÍSICA CON FONDO METÁLICO Y QR DORADO INTEGRADO
            ========================================================== */
         .physical-card {
             width: 380px;
             height: 224px;
-            background: radial-gradient(circle at center, #1a1a1d 0%, #101012 60%, #08080a 100%);
+            /* Fondo degradado metálico pulido HD */
+            background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%);
             border-radius: 12px;
             display: flex;
             flex-direction: column;
@@ -110,37 +111,35 @@
             align-items: center;
             gap: 16px;
             position: relative;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.1);
             margin-bottom: 25px;
             overflow: hidden;
             padding: 20px;
         }
 
-        /* Logotipo dorado centrado idéntico a la foto */
+        /* Logotipo dorado centrado */
         .brand-logo-centered {
             color: var(--gold-primary);
             font-size: 2.3rem;
             font-weight: 400;
             letter-spacing: 0.5px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            text-shadow: 0 0 2px rgba(221, 182, 104, 0.2);
+            text-shadow: 0 0 2px rgba(223, 177, 91, 0.3);
         }
 
-        /* Contenedor del QR clásico (puntos negros sobre fondo blanco puro) */
+        /* Contenedor del QR Dorado integrado sin recuadro blanco */
         .qr-frame-minimal {
-            background: #ffffff;
-            padding: 6px;
-            border-radius: 6px;
+            background: transparent;
+            padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
         }
 
         .qr-frame-minimal img, .qr-frame-minimal canvas {
             display: block;
-            width: 78px !important;
-            height: 78px !important;
+            width: 82px !important;
+            height: 82px !important;
         }
 
         /* ==========================================
@@ -176,7 +175,7 @@
         .btn:hover {
             background: var(--gold-primary);
             color: #000000;
-            box-shadow: 0 0 15px rgba(221, 182, 104, 0.3);
+            box-shadow: 0 0 15px rgba(223, 177, 91, 0.3);
         }
 
         .btn-full {
@@ -221,7 +220,7 @@
 
     <header>
         <h1>linkea.fy</h1>
-        <p>Panel de Control • Black Gold Edition</p>
+        <p>Panel de Control • Metal Edition HD</p>
     </header>
 
     <div class="container" id="tarjetas-container">
@@ -261,7 +260,7 @@
                                 <span class="badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
                             </div>
 
-                            <!-- Tarjeta Física Idéntica -->
+                            <!-- Tarjeta Física Metálica HD con QR Dorado -->
                             <div class="physical-card" id="${cardIdUnico}">
                                 <div class="brand-logo-centered">linkea.fy</div>
                                 <div class="qr-frame-minimal" id="${qrIdUnico}"></div>
@@ -279,14 +278,14 @@
 
                     container.innerHTML += cardHTML;
 
-                    // Generador QR clásico de alto contraste (puntos negros, fondo blanco)
+                    // Generador QR Dorado optimizado (color #dfb15b sobre fondo transparente)
                     const tempDiv = document.createElement("div");
                     new QRCode(tempDiv, {
                         text: urlPermanente,
-                        width: 78,
-                        height: 78,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
+                        width: 82,
+                        height: 82,
+                        colorDark: "#dfb15b",
+                        colorLight: "#00000000",
                         correctLevel: QRCode.CorrectLevel.H
                     });
 
@@ -323,7 +322,7 @@
             document.getElementById('cardModal').style.display = 'none';
         }
 
-        // 2. Descargar SOLO EL QR (Soporte inteligente para iPhone y Android)
+        // 2. Descargar SOLO EL QR optimizado para galería móvil
         function descargarQR(qrContainerId, idTarjeta) {
             const qrContainer = document.getElementById(qrContainerId);
             const qrImg = qrContainer.querySelector("img") || qrContainer.querySelector("canvas");
@@ -338,37 +337,13 @@
                 imageUrl = qrImg.toDataURL("image/png");
             }
 
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-            if (isIOS) {
-                const win = window.open("", "_blank");
-                win.document.write(`
-                    <!DOCTYPE html>
-                    <html lang="es">
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>Guardar QR - ID ${idTarjeta}</title>
-                        <style>
-                            body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-                            img { width: 220px; height: 220px; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #ddb668; margin-bottom: 20px; }
-                            p { color: #ddb668; font-size: 1.1rem; line-height: 1.5; max-width: 300px; }
-                        </style>
-                    </head>
-                    <body>
-                        <img src="${imageUrl}" alt="Código QR ${idTarjeta}">
-                        <p>Mantén presionado el código QR con tu dedo y selecciona <b>"Añadir a Fotos"</b>.</p>
-                    </body>
-                    </html>
-                `);
-            } else {
-                const link = document.createElement('a');
-                link.download = `qr-linkeafy-${idTarjeta}.png`;
-                link.href = imageUrl;
-                link.click();
-            }
+            const link = document.createElement('a');
+            link.download = `qr-linkeafy-${idTarjeta}.png`;
+            link.href = imageUrl;
+            link.click();
         }
 
-        // 3. Descargar Tarjeta completa a Fotos en HD
+        // 3. Descargar Tarjeta completa a Fotos / Galería directo en móvil
         function descargarFoto(cardId, idTarjeta) {
             const elemento = document.getElementById(cardId);
             html2canvas(elemento, { 
@@ -377,34 +352,10 @@
                 useCORS: true
             }).then(canvas => {
                 const imageUrl = canvas.toDataURL('image/png', 1.0);
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-                if (isIOS) {
-                    const win = window.open("", "_blank");
-                    win.document.write(`
-                        <!DOCTYPE html>
-                        <html lang="es">
-                        <head>
-                            <meta charset="UTF-8">
-                            <title>Guardar Tarjeta - ID ${idTarjeta}</title>
-                            <style>
-                                body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-                                img { width: 100%; max-width: 350px; border-radius: 12px; margin-bottom: 20px; }
-                                p { color: #ddb668; font-size: 1rem; line-height: 1.5; max-width: 320px; }
-                            </style>
-                        </head>
-                        <body>
-                            <img src="${imageUrl}" alt="Tarjeta ${idTarjeta}">
-                            <p>Mantén presionada la tarjeta con tu dedo y selecciona <b>"Añadir a Fotos"</b>.</p>
-                        </body>
-                        </html>
-                    `);
-                } else {
-                    const link = document.createElement('a');
-                    link.download = `tarjeta-${idTarjeta}-linkeafy-hd.png`;
-                    link.href = imageUrl;
-                    link.click();
-                }
+                const link = document.createElement('a');
+                link.download = `tarjeta-${idTarjeta}-linkeafy-hd.png`;
+                link.href = imageUrl;
+                link.click();
             });
         }
 
@@ -423,7 +374,7 @@
                         .physical-card {
                             width: 85mm;
                             height: 50mm;
-                            background: radial-gradient(circle at center, #1a1a1d 0%, #101012 60%, #08080a 100%) !important;
+                            background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%) !important;
                             border-radius: 12px;
                             display: flex;
                             flex-direction: column;
@@ -434,9 +385,9 @@
                             -webkit-print-color-adjust: exact;
                             print-color-adjust: exact;
                         }
-                        .brand-logo-centered { color: #ddb668; font-size: 2.3rem; font-weight: 400; font-family: sans-serif; letter-spacing: 0.5px; }
-                        .qr-frame-minimal { background: #ffffff; padding: 6px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
-                        .qr-frame-minimal img, .qr-frame-minimal canvas { display: block; width: 78px !important; height: 78px !important; }
+                        .brand-logo-centered { color: #dfb15b; font-size: 2.3rem; font-weight: 400; font-family: sans-serif; letter-spacing: 0.5px; }
+                        .qr-frame-minimal { background: transparent; display: flex; align-items: center; justify-content: center; }
+                        .qr-frame-minimal img, .qr-frame-minimal canvas { display: block; width: 82px !important; height: 82px !important; }
                     </style>
                 </head>
                 <body>
