@@ -349,55 +349,63 @@
     </div>
 
     <script>
-        // ==========================================
-        // 1. EXTRACCIÓN AUTOMÁTICA DEL ID DESDE LA URL
-        // ==========================================
-        const pathSegments = window.location.pathname.split('/').filter(Boolean);
-        let currentId = "0001";
-        
-        for (let i = pathSegments.length - 1; i >= 0; i--) {
-            let seg = pathSegments[i];
-            if (!seg.includes('.html') && seg !== 't' && seg !== 'linkea.fy') {
-                currentId = seg;
-                break;
+        // =========================================================================
+        // DETECCIÓN ROBUSTA DEL ID DESDE LA URL Y SINCRONIZACIÓN CON tarjetas.json
+        // =========================================================================
+        function obtenerIdCard() {
+            // 1. Intentar buscar por parámetros GET (ej: ?id=0045 o ?card=0045)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('id')) return urlParams.get('id');
+            if (urlParams.has('card')) return urlParams.get('card');
+
+            // 2. Extraer de la ruta de carpetas (ej: /t/0045/index.html o /t/0045)
+            const segments = window.location.pathname.split('/').filter(Boolean);
+            
+            // Recorrer los segmentos de atrás hacia adelante buscando un identificador válido
+            for (let i = segments.length - 1; i >= 0; i--) {
+                let seg = segments[i].toLowerCase();
+                // Ignorar extensiones o palabras clave comunes del sistema
+                if (seg !== 'index.html' && seg !== 't' && seg !== '' && !seg.includes('.')) {
+                    return segments[i];
+                }
             }
+            return "0001"; // Valor por defecto si no encuentra nada
         }
 
-        // Mostrar ID preliminar
+        const currentId = obtenerIdCard();
         document.getElementById('badgeId').innerText = `Tarjeta #${currentId}`;
 
-        // ==========================================
-        // 2. LECTURA EN TIEMPO REAL DESDE tarjetas.json
-        // ==========================================
-        async function checkCardData() {
+        // =========================================================================
+        // CONSULTA EN TIEMPO REAL A tarjetas.json (UBICADO EN LA RAIZ O EN /t/)
+        // =========================================================================
+        async function sincronizarConJson() {
             try {
-                // Ajusta la ruta relativa de tarjetas.json según dónde esté guardado este archivo
-                const response = await fetch('../../tarjetas.json');
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    // Si data es un objeto o array, buscamos si el ID existe en el JSON centralizado
-                    let tarjetaInfo = null;
+                // Buscamos el JSON de forma ascendente según la estructura típica
+                const respuesta = await fetch('../../tarjetas.json').catch(() => fetch('../tarjetas.json')).catch(() => fetch('tarjetas.json'));
+                
+                if (respuesta && respuesta.ok) {
+                    const data = await respuesta.json();
+                    let tarjetaData = null;
+
                     if (Array.isArray(data)) {
-                        tarjetaInfo = data.find(item => item.id === currentId || item.id == Number(currentId));
+                        tarjetaData = data.find(item => item.id == currentId);
                     } else if (typeof data === 'object' && data !== null) {
-                        tarjetaInfo = data[currentId];
+                        tarjetaData = data[currentId];
                     }
 
-                    // Si ya fue asignado a un negocio en el JSON, opcionalmente puedes redirigir o actualizar datos
-                    if (tarjetaInfo && tarjetaInfo.urlDestino) {
-                        // Opcional: Si deseas que redirija automáticamente cuando se active:
-                        // window.location.href = tarjetaInfo.urlDestino;
+                    // Si en el JSON se define un destino activo para este ID, opcionalmente puedes redirigir
+                    if (tarjetaData && tarjetaData.urlDestino && tarjetaData.urlDestino !== "") {
+                        // window.location.href = tarjetaData.urlDestino; // Descomentar si deseas redirección automática al activarse
                     }
                 }
-            } catch (error) {
-                console.log("Modo local o JSON pendiente de sincronización:", error);
+            } catch (e) {
+                console.log("Funcionando con ID local en modo stock:", currentId);
             }
         }
 
-        checkCardData();
+        sincronizarConJson();
 
-        // Generar el código QR dinámico apuntando a la URL actual
+        // Generar el código QR dinámico apuntando a la URL actual exacto de la tarjeta
         const currentUrl = window.location.href;
         new QRCode(document.getElementById("qrContainer"), {
             text: currentUrl,
@@ -408,12 +416,12 @@
             correctLevel: QRCode.CorrectLevel.H
         });
 
-        // Configurar enlace de WhatsApp con el ID automático en tiempo real
+        // Configurar enlace de WhatsApp con el ID detectado automáticamente
         const mensajeWa = encodeURIComponent(`Hola, tengo en mis manos la tarjeta linkea.fy con el ID #${currentId} y quiero activarla para mi negocio.`);
         document.getElementById('whatsappBtn').href = `https://wa.me/TU_NUMERO_DE_WHATSAPP?text=${mensajeWa}`;
 
         // ==========================================
-        // 3. CONTROL 3D TILT & GIRO ÉPICO TÁCTIL SEGURO
+        // CONTROL 3D TILT & GIRO ÉPICO TÁCTIL SEGURO
         // ==========================================
         const container = document.getElementById('tiltContainer');
         const scene = document.getElementById('cardScene');
