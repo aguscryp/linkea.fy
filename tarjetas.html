@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración | linkea.fy</title>
-    <!-- Librerías integradas para QRs de alta lectura y exportación HD -->
+    <!-- Librerías para QRs y exportación HD -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -93,20 +93,20 @@
         .badge-inactiva { background: rgba(231, 76, 60, 0.15); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.3); }
 
         /* ==========================================================
-           DISEÑO DE TARJETA BLACK GOLD (Estructura Solicitada)
+           DISEÑO SUPREMO BLACK GOLD (8.5 x 5 cm - Estilo Bancario)
            ========================================================== */
         .physical-card {
             width: 390px;
-            height: 230px; /* Proporción real de tarjeta 8.5 x 5 cm */
-            background: linear-gradient(135deg, #141414 0%, #050505 100%);
+            height: 230px;
+            background: linear-gradient(135deg, #121212 0%, #040404 100%);
             border: 1.5px solid var(--gold);
-            border-radius: 0px; /* Esquinas cuadradas profesionales */
-            padding: 24px 28px;
+            border-radius: 0px; /* Esquinas cuadradas de alta gama */
+            padding: 26px 30px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            box-shadow: 0 12px 35px rgba(223, 177, 91, 0.18);
+            box-shadow: 0 12px 35px rgba(223, 177, 91, 0.2);
             margin-bottom: 22px;
         }
 
@@ -118,7 +118,7 @@
 
         .brand-logo {
             color: var(--gold);
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: 2px;
         }
@@ -129,57 +129,67 @@
             justify-content: space-between;
         }
 
-        /* Simulación de Chip NFC / Contactless Profesional Dorado */
+        /* Chip Bancario Profesional con Efecto Realista 3D Gold */
         .nfc-chip-container {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
             align-items: flex-start;
         }
 
-        .nfc-chip {
-            width: 36px;
-            height: 28px;
-            background: linear-gradient(135deg, #f5e6ca 0%, #dfb15b 50%, #b8860b 100%);
-            border-radius: 4px;
+        .bank-chip {
+            width: 42px;
+            height: 32px;
+            background: linear-gradient(135deg, #f9f1df 0%, #dfb15b 40%, #996515 100%);
+            border-radius: 5px;
             position: relative;
-            box-shadow: inset 0 0 4px rgba(0,0,0,0.4), 0 2px 5px rgba(0,0,0,0.3);
+            box-shadow: inset 0 1px 3px rgba(255,255,255,0.6), 0 3px 6px rgba(0,0,0,0.4);
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
-        /* Líneas internas del chip para realismo */
-        .nfc-chip::after {
+        /* Líneas de contacto del chip de banco */
+        .bank-chip::before {
             content: "";
             position: absolute;
-            width: 80%;
-            height: 80%;
-            border: 1px solid rgba(0,0,0,0.25);
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, transparent 45%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0.3) 55%, transparent 55%),
+                linear-gradient(0deg, transparent 45%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0.3) 55%, transparent 55%);
+        }
+
+        .bank-chip::after {
+            content: "";
+            position: absolute;
+            width: 60%;
+            height: 60%;
+            border: 1px solid rgba(0,0,0,0.35);
             border-radius: 2px;
         }
 
         .contactless-waves {
             color: var(--gold);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             letter-spacing: -2px;
-            margin-top: 4px;
             opacity: 0.9;
         }
 
-        /* Contenedor QR con fondo blanco puro para escaneo instantáneo */
+        /* Contenedor QR de alto contraste */
         .qr-frame {
             background: #ffffff;
-            padding: 5px;
+            padding: 6px;
             border-radius: 4px;
             display: inline-block;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
         }
 
         .qr-frame canvas, .qr-frame img {
             display: block;
-            width: 72px !important;
-            height: 72px !important;
+            width: 76px !important;
+            height: 76px !important;
         }
 
         .card-bottom {
@@ -196,7 +206,7 @@
 
         .card-title-main {
             color: var(--text-main);
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
@@ -205,13 +215,6 @@
             color: var(--gold);
             font-size: 0.75rem;
             font-weight: 500;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
-
-        .card-id-label {
-            color: var(--text-muted);
-            font-size: 0.7rem;
             letter-spacing: 1.5px;
             text-transform: uppercase;
         }
@@ -332,15 +335,14 @@
                                 <span class="badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
                             </div>
 
-                            <!-- Tarjeta Física Black Gold HD -->
+                            <!-- Tarjeta Física Suprema Black Gold HD -->
                             <div class="physical-card" id="${cardIdUnico}">
                                 <div class="card-top">
                                     <div class="brand-logo">linkea.fy</div>
-                                    <div class="card-id-label">ID: ${tarjeta.id}</div>
                                 </div>
                                 <div class="card-middle">
                                     <div class="nfc-chip-container">
-                                        <div class="nfc-chip"></div>
+                                        <div class="bank-chip"></div>
                                         <div class="contactless-waves">&#187;&#187;</div>
                                     </div>
                                     <div class="qr-frame" id="${qrIdUnico}"></div>
@@ -350,7 +352,6 @@
                                         <div class="card-title-main">${tarjeta.nombre}</div>
                                         <div class="card-title-sub">Black Gold</div>
                                     </div>
-                                    <div class="card-id-label">SECURE</div>
                                 </div>
                             </div>
 
@@ -365,11 +366,11 @@
 
                     container.innerHTML += cardHTML;
 
-                    // Generar QR de alto contraste para lectura instantánea en celulares
+                    // Generar QR de alto contraste para lectura instantánea
                     new QRCode(document.getElementById(qrIdUnico), {
                         text: urlPermanente,
-                        width: 72,
-                        height: 72,
+                        width: 76,
+                        height: 76,
                         colorDark: "#000000",
                         colorLight: "#ffffff",
                         correctLevel: QRCode.CorrectLevel.H
@@ -429,10 +430,10 @@
                         .physical-card {
                             width: 85mm;
                             height: 50mm;
-                            background: linear-gradient(135deg, #141414 0%, #050505 100%) !important;
+                            background: linear-gradient(135deg, #121212 0%, #040404 100%) !important;
                             border: 1.5px solid #dfb15b;
                             border-radius: 0px;
-                            padding: 24px 28px;
+                            padding: 26px 30px;
                             display: flex;
                             flex-direction: column;
                             justify-content: space-between;
@@ -441,35 +442,43 @@
                             print-color-adjust: exact;
                         }
                         .card-top { display: flex; justify-content: space-between; align-items: center; }
-                        .brand-logo { color: #dfb15b; font-size: 1.4rem; font-weight: 700; letter-spacing: 2px; font-family: sans-serif; }
+                        .brand-logo { color: #dfb15b; font-size: 1.5rem; font-weight: 700; letter-spacing: 2px; font-family: sans-serif; }
                         .card-middle { display: flex; align-items: center; justify-content: space-between; }
-                        .nfc-chip-container { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
-                        .nfc-chip {
-                            width: 36px;
-                            height: 28px;
-                            background: linear-gradient(135deg, #f5e6ca 0%, #dfb15b 50%, #b8860b 100%);
-                            border-radius: 4px;
+                        .nfc-chip-container { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+                        .bank-chip {
+                            width: 42px;
+                            height: 32px;
+                            background: linear-gradient(135deg, #f9f1df 0%, #dfb15b 40%, #996515 100%);
+                            border-radius: 5px;
                             position: relative;
                             display: flex;
                             justify-content: center;
                             align-items: center;
                         }
-                        .nfc-chip::after {
+                        .bank-chip::before {
                             content: "";
                             position: absolute;
-                            width: 80%;
-                            height: 80%;
-                            border: 1px solid rgba(0,0,0,0.25);
+                            width: 100%;
+                            height: 100%;
+                            background: 
+                                linear-gradient(90deg, transparent 45%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0.3) 55%, transparent 55%),
+                                linear-gradient(0deg, transparent 45%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0.3) 55%, transparent 55%);
+                        }
+                        .bank-chip::after {
+                            content: "";
+                            position: absolute;
+                            width: 60%;
+                            height: 60%;
+                            border: 1px solid rgba(0,0,0,0.35);
                             border-radius: 2px;
                         }
-                        .contactless-waves { color: #dfb15b; font-size: 1.1rem; letter-spacing: -2px; margin-top: 4px; }
-                        .qr-frame { background: #ffffff; padding: 5px; border-radius: 4px; display: inline-block; }
-                        .qr-frame canvas, .qr-frame img { display: block; width: 72px !important; height: 72px !important; }
+                        .contactless-waves { color: #dfb15b; font-size: 1.2rem; letter-spacing: -2px; }
+                        .qr-frame { background: #ffffff; padding: 6px; border-radius: 4px; display: inline-block; }
+                        .qr-frame canvas, .qr-frame img { display: block; width: 76px !important; height: 76px !important; }
                         .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
                         .card-titles-group { display: flex; flex-direction: column; gap: 2px; }
-                        .card-title-main { color: #ffffff; font-size: 1.15rem; font-weight: 600; font-family: sans-serif; }
+                        .card-title-main { color: #ffffff; font-size: 1.2rem; font-weight: 600; font-family: sans-serif; }
                         .card-title-sub { color: #dfb15b; font-size: 0.75rem; font-weight: 500; letter-spacing: 1.5px; font-family: sans-serif; text-transform: uppercase; }
-                        .card-id-label { color: #888; font-size: 0.7rem; letter-spacing: 1.5px; font-family: sans-serif; text-transform: uppercase; }
                     </style>
                 </head>
                 <body>
