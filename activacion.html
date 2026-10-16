@@ -11,7 +11,7 @@
         :root {
             --bg-color: #050507;
             --gold-primary: #dfb15b;
-            --gold-glow: rgba(223, 177, 91, 0.4);
+            --gold-glow: rgba(223, 177, 91, 0.35);
             --text-main: #ffffff;
             --text-muted: #88888c;
         }
@@ -37,24 +37,24 @@
             position: relative;
         }
 
-        /* Aura de luz animada más envolvente */
+        /* Aura ambiental multicapa */
         .bg-glow {
             position: absolute;
-            width: 450px;
-            height: 450px;
-            background: radial-gradient(circle, var(--gold-glow) 0%, rgba(0,0,0,0) 70%);
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, var(--gold-glow) 0%, rgba(223, 177, 91, 0.05) 50%, rgba(0,0,0,0) 70%);
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 0;
             filter: blur(60px);
             pointer-events: none;
-            animation: pulseGlow 5s infinite ease-in-out;
+            animation: pulseGlow 6s infinite ease-in-out;
         }
 
         @keyframes pulseGlow {
-            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.15); }
+            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.18); }
         }
 
         .container {
@@ -66,7 +66,7 @@
             border: 1px solid rgba(223, 177, 91, 0.3);
             border-radius: 24px;
             padding: 35px 22px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.95), 0 0 30px rgba(223, 177, 91, 0.15);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.95), 0 0 35px rgba(223, 177, 91, 0.15);
             backdrop-filter: blur(15px);
             animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             display: flex;
@@ -100,7 +100,7 @@
         }
 
         /* ==========================================
-           CONTENEDOR 3D FLIP & TILT ÉPICO
+           CONTENEDOR 3D CINEMÁTICO ULTRA FLUIDO
            ========================================== */
         .card-tilt-container {
             width: 100%;
@@ -117,13 +117,13 @@
             height: 200px;
             position: relative;
             transform-style: preserve-3d;
-            /* Transición fluida para el seguimiento del mouse */
-            transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: transform;
+            transition: transform 0.12s cubic-bezier(0.1, 0.9, 0.2, 1);
         }
 
-        /* CLASE CLAVE PARA EL GIRO LENTO Y CINEMATOGRÁFICO */
+        /* Giro súper fluido con curva de aceleración cinematográfica */
         .card-3d-scene.animating-flip {
-            transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            transition: transform 0.95s cubic-bezier(0.19, 1, 0.22, 1) !important;
         }
 
         .card-face {
@@ -134,15 +134,16 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             border-radius: 14px;
-            background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%);
+            background: linear-gradient(135deg, #1d1d22 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95), inset 0 1px 2px rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(223, 177, 91, 0.35);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.95), inset 0 1px 2px rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(223, 177, 91, 0.38);
             padding: 20px;
+            overflow: hidden;
         }
 
         .card-back {
@@ -158,6 +159,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+            z-index: 2;
         }
 
         .qr-frame-minimal img, .qr-frame-minimal canvas {
@@ -171,18 +173,68 @@
             font-size: 1.8rem;
             font-weight: 400;
             letter-spacing: 0.5px;
+            z-index: 2;
         }
 
+        /* ==========================================
+           DESTELLO METÁLICO FLUIDO EN FRENTE Y DORSO
+           ========================================== */
+        .card-face::before {
+            content: '';
+            position: absolute;
+            top: -75%;
+            left: -75%;
+            width: 250%;
+            height: 250%;
+            background: linear-gradient(
+                115deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.03) 38%,
+                rgba(255, 220, 150, 0.45) 50%,
+                rgba(255, 255, 255, 0.03) 62%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(25deg) translateY(-100%);
+            animation: ultraShine 2.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            mix-blend-mode: color-dodge;
+            z-index: 1;
+        }
+
+        /* Desfase para que el dorso tenga su propia onda dinámica */
+        .card-back::before {
+            animation-delay: 1.1s;
+        }
+
+        @keyframes ultraShine {
+            0% {
+                transform: rotate(25deg) translateY(-120%);
+                opacity: 0;
+            }
+            15% {
+                opacity: 1;
+            }
+            85% {
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(25deg) translateY(120%);
+                opacity: 0;
+            }
+        }
+
+        /* Reflejo interactivo que reacciona a la inclinación */
         .card-shine {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             border-radius: 14px;
-            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.15) 0%, transparent 70%);
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.18) 0%, transparent 65%);
             pointer-events: none;
             mix-blend-mode: overlay;
+            z-index: 3;
         }
 
-        /* Botón de giro elegante */
+        /* Botón de giro interactivo */
         .btn-flip {
             background: rgba(223, 177, 91, 0.08);
             color: var(--gold-primary);
@@ -203,7 +255,7 @@
         .btn-flip:hover {
             background: var(--gold-primary);
             color: #000;
-            box-shadow: 0 0 15px rgba(223, 177, 91, 0.4);
+            box-shadow: 0 0 20px rgba(223, 177, 91, 0.45);
             transform: translateY(-2px);
         }
 
@@ -265,10 +317,10 @@
         <div class="brand-logo">linkea.fy</div>
         <div class="card-id-badge" id="badgeId">Tarjeta en Stock</div>
 
-        <!-- Tarjeta Interactiva 3D -->
+        <!-- Tarjeta Interactiva 3D HD -->
         <div class="card-tilt-container" id="tiltContainer">
             <div class="card-3d-scene" id="cardScene">
-                <!-- CARA FRONTAL (Logo + QR Real) -->
+                <!-- CARA FRONTAL -->
                 <div class="card-face card-front">
                     <div class="card-shine"></div>
                     <div class="card-inner-logo">linkea.fy</div>
@@ -277,13 +329,13 @@
                 <!-- CARA TRASERA (DORSO) -->
                 <div class="card-face card-back">
                     <div class="card-shine"></div>
-                    <div style="font-size: 0.9rem; color: var(--gold-primary); letter-spacing: 3px; font-weight: 600; margin-bottom: 8px;">BLACK GOLD</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;">Tecnología NFC & QR Integrada<br>Espacio Exclusivo Disponible</div>
+                    <div style="font-size: 0.95rem; color: var(--gold-primary); letter-spacing: 3px; font-weight: 600; margin-bottom: 8px; z-index: 2;">BLACK GOLD</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; z-index: 2;">Tecnología NFC & QR Integrada<br>Espacio Exclusivo Disponible</div>
                 </div>
             </div>
         </div>
 
-        <!-- Botón para voltear la tarjeta con animación épica -->
+        <!-- Botón para voltear la tarjeta -->
         <button class="btn-flip" id="flipBtn">
             <i class="fa-solid fa-rotate"></i> Girar Tarjeta
         </button>
@@ -340,20 +392,17 @@
             scene.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY + flipAngle}deg)`;
         }
 
-        // Activamos la clase de animación lenta y cinemática al presionar el botón de giro
         flipBtn.addEventListener('click', () => {
             isFlipped = !isFlipped;
             scene.classList.add('animating-flip');
             updateTransform();
 
-            // Quitamos la clase temporal para que el movimiento con el mouse vuelva a ser inmediato al terminar el giro
             setTimeout(() => {
                 scene.classList.remove('animating-flip');
-            }, 850);
+            }, 950);
         });
 
         function handleMove(clientX, clientY) {
-            // Si está girando de manera épica, evitamos interferir con el mouse
             if (scene.classList.contains('animating-flip')) return;
 
             const rect = container.getBoundingClientRect();
@@ -363,8 +412,8 @@
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
 
-            currentRotateX = -((y - centerY) / centerY) * 10;
-            currentRotateY = ((x - centerX) / centerX) * 10;
+            currentRotateX = -((y - centerY) / centerY) * 12;
+            currentRotateY = ((x - centerX) / centerX) * 12;
 
             updateTransform();
         }
