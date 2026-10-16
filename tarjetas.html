@@ -4,25 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración | linkea.fy</title>
-    <!-- Librería estándar de códigos QR -->
+    <!-- Librerías para QRs y exportación HD -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- Librería para descarga de imágenes en Alta Definición -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --bg-color: #050505;
-            --card-dark: #0d0d0d;
-            --gold: #d4af37;
-            --gold-light: #f3e5ab;
+            --bg-color: #030303;
+            --card-dark: #0a0a0a;
+            --gold-primary: #dfb15b;
+            --gold-light: #f9f1df;
+            --gold-dark: #996515;
             --text-main: #ffffff;
-            --text-muted: #777777;
+            --text-muted: #888888;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
@@ -37,7 +37,7 @@
         }
 
         header h1 {
-            color: var(--gold);
+            color: var(--gold-primary);
             font-size: 2.4rem;
             letter-spacing: 4px;
             text-transform: uppercase;
@@ -48,7 +48,7 @@
             color: var(--text-muted);
             font-size: 0.9rem;
             margin-top: 10px;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
         }
 
@@ -56,19 +56,19 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(410px, 1fr));
             gap: 40px;
         }
 
         .card-box {
             background: var(--card-dark);
-            border: 1px solid #1a1a1a;
-            border-radius: 12px;
+            border: 1px solid #1c1c1c;
+            border-radius: 14px;
             padding: 28px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
         }
 
         .card-meta {
@@ -99,33 +99,34 @@
         .badge-inactiva { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
 
         /* ==========================================================
-           DISEÑO SUPREMO EMPRESARIAL - BLACK CARD LEVEL (8.5 x 5 cm)
+           DISEÑO SUPREMO BANCARIO - BLACK CARD (8.5 x 5 cm)
            ========================================================== */
         .physical-card {
             width: 410px;
             height: 240px;
-            background: linear-gradient(135deg, #111111 0%, #030303 100%);
-            border: 1px solid var(--gold);
-            border-radius: 8px;
+            background: radial-gradient(circle at 70% 20%, #1a1a1a 0%, #080808 70%, #020202 100%);
+            border: 1.5px solid var(--gold-primary);
+            border-radius: 10px;
             padding: 30px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.15), inset 0 0 15px rgba(255,255,255,0.03);
+            box-shadow: 0 25px 50px rgba(223, 177, 91, 0.18), inset 0 0 20px rgba(255,255,255,0.04);
             margin-bottom: 25px;
+            overflow: hidden;
         }
 
         .card-top {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
         }
 
         .brand-logo {
-            color: var(--gold);
-            font-size: 1.3rem;
-            font-weight: 400;
+            color: var(--gold-primary);
+            font-size: 1.4rem;
+            font-weight: 300;
             letter-spacing: 3px;
             text-transform: lowercase;
         }
@@ -136,47 +137,59 @@
             justify-content: space-between;
         }
 
-        /* Chip Bancario Empresarial Avanzado */
-        .chip-box {
+        /* CHIP EMV BANCARIO REALISTA SUPREMO */
+        .chip-container {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             align-items: flex-start;
         }
 
-        .bank-chip-pro {
-            width: 45px;
-            height: 35px;
-            background: linear-gradient(135deg, #ebd197 0%, #d4af37 50%, #9a7b20 100%);
-            border-radius: 4px;
+        .emv-chip {
+            width: 50px;
+            height: 38px;
+            background: linear-gradient(135deg, #fef2cc 0%, #dfb15b 45%, #996515 100%);
+            border-radius: 5px;
             position: relative;
-            box-shadow: inset 0 1px 2px rgba(255,255,255,0.7), 0 4px 8px rgba(0,0,0,0.5);
+            box-shadow: inset 0 1px 3px rgba(255,255,255,0.8), 0 5px 10px rgba(0,0,0,0.6);
             overflow: hidden;
+            border: 0.5px solid #b8860b;
         }
 
-        .bank-chip-pro::before {
+        /* Patrón de circuitos de oro grabados en el chip */
+        .emv-chip::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: 
-                linear-gradient(90deg, transparent 42%, rgba(0,0,0,0.25) 42%, rgba(0,0,0,0.25) 58%, transparent 58%),
-                linear-gradient(0deg, transparent 42%, rgba(0,0,0,0.25) 42%, rgba(0,0,0,0.25) 58%, transparent 58%);
+            background-image: 
+                linear-gradient(90deg, transparent 33%, rgba(0,0,0,0.3) 33%, rgba(0,0,0,0.3) 36%, transparent 36%),
+                linear-gradient(90deg, transparent 66%, rgba(0,0,0,0.3) 66%, rgba(0,0,0,0.3) 69%, transparent 69%),
+                linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.3) 48%, rgba(0,0,0,0.3) 52%, transparent 52%);
         }
 
-        .contactless-icon {
-            color: var(--gold);
-            font-size: 1.1rem;
+        .emv-chip::after {
+            content: "";
+            position: absolute;
+            top: 25%; left: 15%; right: 15%; bottom: 25%;
+            border: 1px solid rgba(0,0,0,0.35);
+            border-radius: 2px;
+        }
+
+        .contactless-waves {
+            color: var(--gold-primary);
+            font-size: 1.2rem;
             letter-spacing: -2px;
-            opacity: 0.8;
+            opacity: 0.85;
+            transform: rotate(90deg);
         }
 
-        /* Marco QR Corporativo minimalista */
+        /* Marco QR Corporativo */
         .qr-frame {
             background: #ffffff;
             padding: 5px;
-            border-radius: 3px;
+            border-radius: 4px;
             display: inline-block;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.8);
             width: 84px;
             height: 84px;
             display: flex;
@@ -196,48 +209,33 @@
             align-items: flex-end;
         }
 
-        .card-titles-group {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
         .card-title-main {
             color: var(--text-main);
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 500;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .card-title-sub {
-            color: var(--gold);
-            font-size: 0.65rem;
-            font-weight: 400;
             letter-spacing: 3px;
             text-transform: uppercase;
-            opacity: 0.85;
         }
 
         /* ==========================================
-           BOTONES DE ACCIÓN
+           BOTONES DE ACCIÓN (Grid Profesional)
            ========================================== */
         .actions-grid {
             width: 100%;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 10px;
         }
 
         .btn {
             background: transparent;
-            color: var(--gold);
-            border: 1px solid var(--gold);
+            color: var(--gold-primary);
+            border: 1px solid var(--gold-primary);
             padding: 11px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 500;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             letter-spacing: 1px;
             text-transform: uppercase;
             transition: all 0.3s ease;
@@ -250,9 +248,9 @@
         }
 
         .btn:hover {
-            background: var(--gold);
+            background: var(--gold-primary);
             color: var(--bg-color);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 15px rgba(223, 177, 91, 0.4);
         }
 
         .btn-full {
@@ -264,7 +262,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.92);
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -275,7 +273,7 @@
             background: var(--card-dark);
             padding: 40px;
             border-radius: 12px;
-            border: 1px solid var(--gold);
+            border: 1px solid var(--gold-primary);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -308,7 +306,7 @@
     <div class="modal" id="cardModal">
         <div class="modal-content">
             <span class="close-modal" onclick="cerrarModal()">&times;</span>
-            <h3 style="color: var(--gold); margin-bottom: 25px; font-weight: 400; letter-spacing: 2px;" id="modalTitle">Vista Previa</h3>
+            <h3 style="color: var(--gold-primary); margin-bottom: 25px; font-weight: 400; letter-spacing: 2px;" id="modalTitle">Vista Previa</h3>
             <div id="modalCardContainer"></div>
         </div>
     </div>
@@ -337,30 +335,28 @@
                                 <span class="badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
                             </div>
 
-                            <!-- Tarjeta Física Suprema Black Gold -->
+                            <!-- Tarjeta Física Suprema Black Gold (Minimalista & Bancaria) -->
                             <div class="physical-card" id="${cardIdUnico}">
                                 <div class="card-top">
                                     <div class="brand-logo">linkea.fy</div>
                                 </div>
                                 <div class="card-middle">
-                                    <div class="chip-box">
-                                        <div class="bank-chip-pro"></div>
-                                        <div class="contactless-icon">&#187;&#187;</div>
+                                    <div class="chip-container">
+                                        <div class="emv-chip"></div>
+                                        <div class="contactless-waves">&#187;&#187;</div>
                                     </div>
                                     <div class="qr-frame" id="${qrIdUnico}"></div>
                                 </div>
                                 <div class="card-bottom">
-                                    <div class="card-titles-group">
-                                        <div class="card-title-main">Black Gold</div>
-                                        <div class="card-title-sub">Authorized Edition</div>
-                                    </div>
+                                    <div class="card-title-main">Black Gold</div>
                                 </div>
                             </div>
 
                             <!-- Opciones individuales -->
                             <div class="actions-grid">
                                 <button class="btn" onclick="verTarjeta('${cardIdUnico}', 'Tarjeta ID: ${tarjeta.id}')">Ver Tarjeta</button>
-                                <button class="btn" onclick="descargarFoto('${cardIdUnico}', '${tarjeta.id}')">Descargar a Fotos</button>
+                                <button class="btn" onclick="descargarQR('${qrIdUnico}', '${tarjeta.id}')">Descargar QR</button>
+                                <button class="btn btn-full" onclick="descargarFoto('${cardIdUnico}', '${tarjeta.id}')">Descargar Tarjeta a Fotos</button>
                                 <button class="btn btn-full" onclick="descargarPDF('${cardIdUnico}', 'Tarjeta-${tarjeta.id}')">Imprimir / Guardar PDF</button>
                             </div>
                         </div>
@@ -368,7 +364,7 @@
 
                     container.innerHTML += cardHTML;
 
-                    // GENERACIÓN SEGURA DE QR: Usamos un elemento temporal para evitar fallos de renderizado múltiple en GitHub Pages
+                    // Generación segura del QR con contenedor temporal
                     const tempDiv = document.createElement("div");
                     new QRCode(tempDiv, {
                         text: urlPermanente,
@@ -379,7 +375,6 @@
                         correctLevel: QRCode.CorrectLevel.H
                     });
 
-                    // Esperamos a que la librería genere el elemento QR y lo pasamos de forma limpia al contenedor definitivo
                     setTimeout(() => {
                         const qrImg = tempDiv.querySelector("img") || tempDiv.querySelector("canvas");
                         const destinoQR = document.getElementById(qrIdUnico);
@@ -413,7 +408,56 @@
             document.getElementById('cardModal').style.display = 'none';
         }
 
-        // 2. Descargar a Fotos en Full HD real (escala 4x)
+        // 2. Descargar SOLO EL QR de forma inteligente (Compatible con iPhone y Android)
+        function descargarQR(qrContainerId, idTarjeta) {
+            const qrContainer = document.getElementById(qrContainerId);
+            const qrImg = qrContainer.querySelector("img") || qrContainer.querySelector("canvas");
+
+            if (!qrImg) {
+                alert("El código QR aún se está generando. Intenta en un segundo.");
+                return;
+            }
+
+            // Convertir canvas o imagen de QR a URL de datos de alta calidad
+            let imageUrl = qrImg.src;
+            if (qrImg.tagName === "CANVAS") {
+                imageUrl = qrImg.toDataURL("image/png");
+            }
+
+            // Detección estricta de Dispositivo iOS (iPhone / iPad)
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+            if (isIOS) {
+                // En iPhone, Safari bloquea la descarga directa automática. Abrimos ventana optimizada para guardar en Fotos.
+                const win = window.open("", "_blank");
+                win.document.write(`
+                    <!DOCTYPE html>
+                    <html lang="es">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Guardar QR - ID ${idTarjeta}</title>
+                        <style>
+                            body { background: #080808; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+                            img { width: 220px; height: 220px; border-radius: 8px; border: 3px solid #dfb15b; background: #fff; padding: 10px; margin-bottom: 20px; }
+                            p { color: #dfb15b; font-size: 1.1rem; line-height: 1.5; max-width: 300px; }
+                        </style>
+                    </head>
+                    <body>
+                        <img src="${imageUrl}" alt="Código QR ${idTarjeta}">
+                        <p>Mantén presionado el código QR con tu dedo y selecciona <b>"Añadir a Fotos"</b> o <b>"Guardar en Fotos"</b>.</p>
+                    </body>
+                    </html>
+                `);
+            } else {
+                // Descarga automática directa para Android y Computadora
+                const link = document.createElement('a');
+                link.download = `qr-linkeafy-${idTarjeta}.png`;
+                link.href = imageUrl;
+                link.click();
+            }
+        }
+
+        // 3. Descargar Tarjeta completa a Fotos (con soporte inteligente para iPhone)
         function descargarFoto(cardId, idTarjeta) {
             const elemento = document.getElementById(cardId);
             html2canvas(elemento, { 
@@ -421,14 +465,39 @@
                 backgroundColor: null,
                 useCORS: true
             }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `tarjeta-${idTarjeta}-linkeafy-hd.png`;
-                link.href = canvas.toDataURL('image/png', 1.0);
-                link.click();
+                const imageUrl = canvas.toDataURL('image/png', 1.0);
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+                if (isIOS) {
+                    const win = window.open("", "_blank");
+                    win.document.write(`
+                        <!DOCTYPE html>
+                        <html lang="es">
+                        <head>
+                            <meta charset="UTF-8">
+                            <title>Guardar Tarjeta - ID ${idTarjeta}</title>
+                            <style>
+                                body { background: #080808; color: #fff; font-family: sans-serif; text-align: center; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+                                img { width: 100%; max-width: 350px; border-radius: 8px; border: 2px solid #dfb15b; margin-bottom: 20px; }
+                                p { color: #dfb15b; font-size: 1rem; line-height: 1.5; max-width: 320px; }
+                            </style>
+                        </head>
+                        <body>
+                            <img src="${imageUrl}" alt="Tarjeta ${idTarjeta}">
+                            <p>Mantén presionada la tarjeta con tu dedo y selecciona <b>"Añadir a Fotos"</b>.</p>
+                        </body>
+                        </html>
+                    `);
+                } else {
+                    const link = document.createElement('a');
+                    link.download = `tarjeta-${idTarjeta}-linkeafy-hd.png`;
+                    link.href = imageUrl;
+                    link.click();
+                }
             });
         }
 
-        // 3. Imprimir / Guardar PDF profesional a 8.5 x 5 cm
+        // 4. Imprimir / Guardar PDF profesional a 8.5 x 5 cm
         function descargarPDF(cardId, nombre) {
             const elemento = document.getElementById(cardId).outerHTML;
             const ventanaPrint = window.open('', '_blank', 'width=900,height=700');
@@ -443,9 +512,9 @@
                         .physical-card {
                             width: 85mm;
                             height: 50mm;
-                            background: linear-gradient(135deg, #111111 0%, #030303 100%) !important;
-                            border: 1px solid #d4af37;
-                            border-radius: 8px;
+                            background: radial-gradient(circle at 70% 20%, #1a1a1a 0%, #080808 70%, #020202 100%) !important;
+                            border: 1.5px solid #dfb15b;
+                            border-radius: 10px;
                             padding: 30px;
                             display: flex;
                             flex-direction: column;
@@ -454,32 +523,32 @@
                             -webkit-print-color-adjust: exact;
                             print-color-adjust: exact;
                         }
-                        .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
-                        .brand-logo { color: #d4af37; font-size: 1.3rem; font-weight: 400; letter-spacing: 3px; font-family: sans-serif; text-transform: lowercase; }
+                        .card-top { display: flex; justify-content: space-between; align-items: center; }
+                        .brand-logo { color: #dfb15b; font-size: 1.4rem; font-weight: 300; letter-spacing: 3px; font-family: sans-serif; text-transform: lowercase; }
                         .card-middle { display: flex; align-items: center; justify-content: space-between; }
-                        .chip-box { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
-                        .bank-chip-pro {
-                            width: 45px;
-                            height: 35px;
-                            background: linear-gradient(135deg, #ebd197 0%, #d4af37 50%, #9a7b20 100%);
-                            border-radius: 4px;
+                        .chip-container { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+                        .emv-chip {
+                            width: 50px;
+                            height: 38px;
+                            background: linear-gradient(135deg, #fef2cc 0%, #dfb15b 45%, #996515 100%);
+                            border-radius: 5px;
                             position: relative;
+                            border: 0.5px solid #b8860b;
                         }
-                        .bank-chip-pro::before {
+                        .emv-chip::before {
                             content: "";
                             position: absolute;
                             inset: 0;
-                            background: 
-                                linear-gradient(90deg, transparent 42%, rgba(0,0,0,0.25) 42%, rgba(0,0,0,0.25) 58%, transparent 58%),
-                                linear-gradient(0deg, transparent 42%, rgba(0,0,0,0.25) 42%, rgba(0,0,0,0.25) 58%, transparent 58%);
+                            background-image: 
+                                linear-gradient(90deg, transparent 33%, rgba(0,0,0,0.3) 33%, rgba(0,0,0,0.3) 36%, transparent 36%),
+                                linear-gradient(90deg, transparent 66%, rgba(0,0,0,0.3) 66%, rgba(0,0,0,0.3) 69%, transparent 69%),
+                                linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.3) 48%, rgba(0,0,0,0.3) 52%, transparent 52%);
                         }
-                        .contactless-icon { color: #d4af37; font-size: 1.1rem; letter-spacing: -2px; }
-                        .qr-frame { background: #ffffff; padding: 5px; border-radius: 3px; display: inline-block; width: 84px; height: 84px; display: flex; align-items: center; justify-content: center; }
+                        .contactless-icon { color: #dfb15b; font-size: 1.2rem; letter-spacing: -2px; transform: rotate(90deg); }
+                        .qr-frame { background: #ffffff; padding: 5px; border-radius: 4px; display: inline-block; width: 84px; height: 84px; display: flex; align-items: center; justify-content: center; }
                         .qr-frame img { display: block; width: 74px !important; height: 74px !important; }
                         .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-                        .card-titles-group { display: flex; flex-direction: column; gap: 3px; }
-                        .card-title-main { color: #ffffff; font-size: 1.1rem; font-weight: 500; letter-spacing: 2px; font-family: sans-serif; text-transform: uppercase; }
-                        .card-title-sub { color: #d4af37; font-size: 0.65rem; font-weight: 400; letter-spacing: 3px; font-family: sans-serif; text-transform: uppercase; }
+                        .card-title-main { color: #ffffff; font-size: 1.15rem; font-weight: 500; letter-spacing: 3px; font-family: sans-serif; text-transform: uppercase; }
                     </style>
                 </head>
                 <body>
