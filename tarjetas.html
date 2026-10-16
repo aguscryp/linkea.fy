@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración | linkea.fy</title>
-    <!-- Librería QR oficial de alta compatibilidad -->
+    <!-- Librerías para QRs de lectura instantánea y exportación HD -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --bg-color: #000000;
-            --card-dark: #121214;
+            --card-dark: #0a0a0a;
             --gold-primary: #ddb668;
             --text-main: #ffffff;
             --text-muted: #777777;
@@ -97,7 +97,7 @@
         .badge-inactiva { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
 
         /* ==========================================================
-           TARJETA FÍSICA IDENTICA A META AI / MUESTRA (8.5 x 5 cm)
+           TARJETA FÍSICA IDÉNTICA A TU MUESTRA (8.5 x 5 cm)
            ========================================================== */
         .physical-card {
             width: 380px;
@@ -108,7 +108,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             position: relative;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.05);
             margin-bottom: 25px;
@@ -116,7 +116,7 @@
             padding: 20px;
         }
 
-        /* Logotipo dorado limpio */
+        /* Logotipo dorado centrado idéntico a la foto */
         .brand-logo-centered {
             color: var(--gold-primary);
             font-size: 2.3rem;
@@ -126,20 +126,21 @@
             text-shadow: 0 0 2px rgba(221, 182, 104, 0.2);
         }
 
-        /* Contenedor del QR Dorado optimizado */
+        /* Contenedor del QR clásico (puntos negros sobre fondo blanco puro) */
         .qr-frame-minimal {
-            background: transparent;
-            padding: 0;
+            background: #ffffff;
+            padding: 6px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
         }
 
         .qr-frame-minimal img, .qr-frame-minimal canvas {
             display: block;
-            width: 90px !important;
-            height: 90px !important;
-            image-rendering: pixelated;
+            width: 78px !important;
+            height: 78px !important;
         }
 
         /* ==========================================
@@ -220,7 +221,7 @@
 
     <header>
         <h1>linkea.fy</h1>
-        <p>Panel de Control • Tarjetas Minimal Gold Edition</p>
+        <p>Panel de Control • Black Gold Edition</p>
     </header>
 
     <div class="container" id="tarjetas-container">
@@ -278,16 +279,15 @@
 
                     container.innerHTML += cardHTML;
 
-                    // CONFIGURACIÓN DE ALTA LECTURA:
-                    // Usamos Nivel L (Low) o M para que tenga POCOS PUNTOS Y MUY GRANDES (igual que la imagen de Meta AI)
+                    // Generador QR clásico de alto contraste (puntos negros, fondo blanco)
                     const tempDiv = document.createElement("div");
                     new QRCode(tempDiv, {
                         text: urlPermanente,
-                        width: 180, // Renderizado en alta resolución interna
-                        height: 180,
-                        colorDark: "#ddb668", // Dorado exactamente calibrado
-                        colorLight: "#101012", // Fondo oscuro a tono con la tarjeta para engañar al sensor de cámara
-                        correctLevel: QRCode.CorrectLevel.M
+                        width: 78,
+                        height: 78,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
                     });
 
                     setTimeout(() => {
@@ -350,7 +350,7 @@
                         <title>Guardar QR - ID ${idTarjeta}</title>
                         <style>
                             body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-                            img { width: 220px; height: 220px; background: #101012; padding: 15px; border-radius: 8px; border: 1px solid #ddb668; margin-bottom: 20px; }
+                            img { width: 220px; height: 220px; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #ddb668; margin-bottom: 20px; }
                             p { color: #ddb668; font-size: 1.1rem; line-height: 1.5; max-width: 300px; }
                         </style>
                     </head>
@@ -429,14 +429,14 @@
                             flex-direction: column;
                             justify-content: center;
                             align-items: center;
-                            gap: 14px;
+                            gap: 16px;
                             position: relative;
                             -webkit-print-color-adjust: exact;
                             print-color-adjust: exact;
                         }
                         .brand-logo-centered { color: #ddb668; font-size: 2.3rem; font-weight: 400; font-family: sans-serif; letter-spacing: 0.5px; }
-                        .qr-frame-minimal { background: transparent; display: flex; align-items: center; justify-content: center; }
-                        .qr-frame-minimal img, .qr-frame-minimal canvas { display: block; width: 90px !important; height: 90px !important; }
+                        .qr-frame-minimal { background: #ffffff; padding: 6px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+                        .qr-frame-minimal img, .qr-frame-minimal canvas { display: block; width: 78px !important; height: 78px !important; }
                     </style>
                 </head>
                 <body>
