@@ -17,5 +17,12 @@
     "nombre": "Coppetti",
     "link": "https://aguscryp.github.io/linkea.fy/tarjetas.html",
     "estado": "activa"
+  },
+
+  {
+    "id": "0004",
+    "nombre": "Damian Jarry",
+    "link": "https://youtu.be/lnPHtA5auI8?si=NTX--8LIJ7-tRlsR",
+    "estado": "activa"
   }
 ]
