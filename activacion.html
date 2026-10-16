@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espacio Disponible | linkea.fy</title>
+    <title>Activación de Tarjeta | linkea.fy</title>
     <!-- Librería para generar el QR dinámico -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -35,7 +35,6 @@
             text-align: center;
             overflow-x: hidden;
             position: relative;
-            /* Evita comportamientos extraños de zoom en móviles */
             touch-action: manipulation;
         }
 
@@ -214,16 +213,10 @@
         }
 
         @keyframes ultraShine {
-            0% {
-                transform: rotate(25deg) translateY(-120%);
-                opacity: 0;
-            }
+            0% { transform: rotate(25deg) translateY(-120%); opacity: 0; }
             15% { opacity: 1; }
             85% { opacity: 1; }
-            100% {
-                transform: rotate(25deg) translateY(120%);
-                opacity: 0;
-            }
+            100% { transform: rotate(25deg) translateY(120%); opacity: 0; }
         }
 
         .card-shine {
@@ -316,7 +309,8 @@
 
     <div class="container">
         <div class="brand-logo">linkea.fy</div>
-        <div class="card-id-badge">Espacio Disponible en Stock</div>
+        <!-- Aquí se muestra dinámicamente el ID recibido -->
+        <div class="card-id-badge" id="badgeId">Activando Tarjeta...</div>
 
         <!-- Tarjeta Interactiva 3D HD -->
         <div class="card-tilt-container" id="tiltContainer">
@@ -331,7 +325,7 @@
                 <div class="card-face card-back">
                     <div class="card-shine"></div>
                     <div style="font-size: 0.95rem; color: var(--gold-primary); letter-spacing: 3px; font-weight: 600; margin-bottom: 8px; z-index: 2;">BLACK GOLD</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; z-index: 2;">Tecnología NFC & QR Integrada<br>Espacio Exclusivo Disponible</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; z-index: 2;">Tecnología NFC & QR Integrada<br>Panel de Activación</div>
                 </div>
             </div>
         </div>
@@ -341,17 +335,26 @@
             <i class="fa-solid fa-rotate"></i> Girar Tarjeta
         </button>
 
-        <h1>Tu marca merece este nivel</h1>
-        <p>Explora el acabado metálico de alta gama interactuando con la tarjeta en 3D. Gírala para descubrir su diseño integral.</p>
+        <h1>Estás a un paso de activar tu espacio</h1>
+        <p>Confirma la vinculación de esta tarjeta inteligente para comenzar a recibir las interacciones de tus clientes.</p>
 
-        <!-- Botón de WhatsApp general para reclamo de stock -->
-        <a id="whatsappBtn" href="https://wa.me/TU_NUMERO_DE_WHATSAPP?text=Hola,%20quiero%20reclamar%20y%20activar%20una%20tarjeta%20linkea.fy%20en%20stock." target="_blank" class="btn-claim">
-            <i class="fa-brands fa-whatsapp"></i> Reclamar esta Tarjeta
+        <!-- Botón de WhatsApp con el ID dinámico cargado -->
+        <a id="whatsappBtn" href="#" target="_blank" class="btn-claim">
+            <i class="fa-brands fa-whatsapp"></i> Confirmar Activación
         </a>
     </div>
 
     <script>
-        // Generar el código QR dinámico apuntando directamente a la URL actual
+        // ==========================================
+        // LECTURA DEL ID DESDE LA URL (ej: activacion.html?id=0001)
+        // ==========================================
+        const urlParams = new URLSearchParams(window.location.search);
+        const cardId = urlParams.get('id') || "0001";
+
+        // Mostrar el ID en la insignia
+        document.getElementById('badgeId').innerText = `Tarjeta #${cardId}`;
+
+        // Generar el código QR dinámico
         const currentUrl = window.location.href;
         new QRCode(document.getElementById("qrContainer"), {
             text: currentUrl,
@@ -361,6 +364,10 @@
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
         });
+
+        // Configurar el enlace de WhatsApp con el ID correspondiente
+        const mensajeWa = encodeURIComponent(`Hola, quiero confirmar y completar la activación de la tarjeta linkea.fy con el ID #${cardId} para mi negocio.`);
+        document.getElementById('whatsappBtn').href = `https://wa.me/TU_NUMERO_DE_WHATSAPP?text=${mensajeWa}`;
 
         // ==========================================
         // CONTROL 3D TILT & GIRO ÉPICO TÁCTIL SEGURO
@@ -415,7 +422,6 @@
             updateTransform();
         });
 
-        // Control táctil optimizado y seguro para evitar zooms indeseados o bloqueos
         container.addEventListener('touchmove', (e) => {
             if (e.touches.length > 0) {
                 const touch = e.touches[0];
