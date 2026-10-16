@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración | linkea.fy</title>
-    <!-- Librerías para QRs y exportación HD -->
+    <!-- Librerías para QRs de lectura instantánea y exportación HD -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -97,12 +97,12 @@
         .badge-inactiva { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
 
         /* ==========================================================
-           TARJETA FÍSICA CON FONDO METÁLICO Y QR DORADO INTEGRADO
+           TARJETA FÍSICA CON FONDO METÁLICO Y QR BLANCO PROFESIONAL
            ========================================================== */
         .physical-card {
             width: 380px;
             height: 224px;
-            /* Fondo degradado metálico pulido HD */
+            /* Fondo degradado metálico pulido HD sin puntitos */
             background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%);
             border-radius: 12px;
             display: flex;
@@ -127,19 +127,21 @@
             text-shadow: 0 0 2px rgba(223, 177, 91, 0.3);
         }
 
-        /* Contenedor del QR Dorado integrado sin recuadro blanco */
+        /* Contenedor del QR clásico (puntos negros sobre fondo blanco puro) para máxima legibilidad */
         .qr-frame-minimal {
-            background: transparent;
-            padding: 0;
+            background: #ffffff;
+            padding: 6px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
         }
 
         .qr-frame-minimal img, .qr-frame-minimal canvas {
             display: block;
-            width: 82px !important;
-            height: 82px !important;
+            width: 78px !important;
+            height: 78px !important;
         }
 
         /* ==========================================
@@ -260,7 +262,7 @@
                                 <span class="badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
                             </div>
 
-                            <!-- Tarjeta Física Metálica HD con QR Dorado -->
+                            <!-- Tarjeta Física Metálica HD con QR clásico blanco/negro -->
                             <div class="physical-card" id="${cardIdUnico}">
                                 <div class="brand-logo-centered">linkea.fy</div>
                                 <div class="qr-frame-minimal" id="${qrIdUnico}"></div>
@@ -278,14 +280,14 @@
 
                     container.innerHTML += cardHTML;
 
-                    // Generador QR Dorado optimizado (color #dfb15b sobre fondo transparente)
+                    // Generador QR clásico de alto contraste (puntos negros sobre fondo blanco)
                     const tempDiv = document.createElement("div");
                     new QRCode(tempDiv, {
                         text: urlPermanente,
-                        width: 82,
-                        height: 82,
-                        colorDark: "#dfb15b",
-                        colorLight: "#00000000",
+                        width: 78,
+                        height: 78,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
                         correctLevel: QRCode.CorrectLevel.H
                     });
 
@@ -322,7 +324,7 @@
             document.getElementById('cardModal').style.display = 'none';
         }
 
-        // 2. Descargar SOLO EL QR optimizado para galería móvil
+        // 2. Descargar SOLO EL QR
         function descargarQR(qrContainerId, idTarjeta) {
             const qrContainer = document.getElementById(qrContainerId);
             const qrImg = qrContainer.querySelector("img") || qrContainer.querySelector("canvas");
@@ -343,7 +345,7 @@
             link.click();
         }
 
-        // 3. Descargar Tarjeta completa a Fotos / Galería directo en móvil
+        // 3. Descargar Tarjeta completa a Fotos / Galería
         function descargarFoto(cardId, idTarjeta) {
             const elemento = document.getElementById(cardId);
             html2canvas(elemento, { 
@@ -386,8 +388,8 @@
                             print-color-adjust: exact;
                         }
                         .brand-logo-centered { color: #dfb15b; font-size: 2.3rem; font-weight: 400; font-family: sans-serif; letter-spacing: 0.5px; }
-                        .qr-frame-minimal { background: transparent; display: flex; align-items: center; justify-content: center; }
-                        .qr-frame-minimal img, .qr-frame-minimal canvas { display: block; width: 82px !important; height: 82px !important; }
+                        .qr-frame-minimal { background: #ffffff; padding: 6px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+                        .qr-frame-minimal img, .qr-frame-minimal canvas { display: block; width: 78px !important; height: 78px !important; }
                     </style>
                 </head>
                 <body>
