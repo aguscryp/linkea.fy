@@ -10,9 +10,9 @@
     <style>
         :root {
             --bg-color: #000000;
-            --card-dark: #0a0a0a;
-            --gold-primary: #dcb36c;
-            --gold-light: #f5e3bc;
+            --card-dark: #0d0d0d;
+            --gold-primary: #e2c085;
+            --gold-bright: #f0d29a;
             --text-main: #ffffff;
             --text-muted: #777777;
         }
@@ -98,16 +98,13 @@
         .badge-inactiva { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
 
         /* ==========================================================
-           REPRODUCCIÓN IDÉNTICA A LA IMAGEN DE MUESTRA (8.5 x 5 cm)
+           DISEÑO METÁLICO HD SATINADO (Sin Píxeles ni Puntitos - 8.5 x 5 cm)
            ========================================================== */
         .physical-card {
             width: 380px;
             height: 224px;
-            background-color: #121214;
-            /* Textura de papel mate negro carbonizado idéntico al de la foto */
-            background-image: radial-gradient(#1c1c20 1px, transparent 1px), radial-gradient(#0a0a0c 1px, #121214 1px);
-            background-size: 4px 4px;
-            background-position: 0 0, 2px 2px;
+            /* Fondo degradado metálico pulido súper fluido en HD */
+            background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%);
             border-radius: 12px;
             display: flex;
             flex-direction: column;
@@ -115,35 +112,36 @@
             align-items: center;
             gap: 16px;
             position: relative;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.1);
             margin-bottom: 25px;
             overflow: hidden;
             padding: 20px;
         }
 
-        /* Logotipo centrado idéntico */
+        /* Logotipo dorado limpio */
         .brand-logo-centered {
             color: var(--gold-primary);
-            font-size: 2.1rem;
+            font-size: 2.2rem;
             font-weight: 400;
             letter-spacing: 0.5px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            text-shadow: 0 0 1px rgba(220, 179, 108, 0.3);
+            text-shadow: 0 0 2px rgba(226, 192, 133, 0.3);
         }
 
-        /* Contenedor del QR dorado directo sobre el papel negro */
+        /* Contenedor del QR Dorado optimizado para lectura instantánea */
         .qr-frame-minimal {
             background: transparent;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            filter: drop-shadow(0 0 1px rgba(240, 210, 154, 0.2));
         }
 
         .qr-frame-minimal img, .qr-frame-minimal canvas {
             display: block;
-            width: 78px !important;
-            height: 78px !important;
+            width: 82px !important;
+            height: 82px !important;
         }
 
         /* ==========================================
@@ -179,7 +177,7 @@
         .btn:hover {
             background: var(--gold-primary);
             color: #000000;
-            box-shadow: 0 0 15px rgba(220, 179, 108, 0.3);
+            box-shadow: 0 0 15px rgba(226, 192, 133, 0.3);
         }
 
         .btn-full {
@@ -224,7 +222,7 @@
 
     <header>
         <h1>linkea.fy</h1>
-        <p>Panel de Control • Tarjetas Minimalistas Gold</p>
+        <p>Panel de Control • Tarjetas Metal Edition HD</p>
     </header>
 
     <div class="container" id="tarjetas-container">
@@ -264,7 +262,7 @@
                                 <span class="badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
                             </div>
 
-                            <!-- Tarjeta Física Idéntica a la Imagen de Muestra -->
+                            <!-- Tarjeta Física Metal HD Degradada -->
                             <div class="physical-card" id="${cardIdUnico}">
                                 <div class="brand-logo-centered">linkea.fy</div>
                                 <div class="qr-frame-minimal" id="${qrIdUnico}"></div>
@@ -282,15 +280,15 @@
 
                     container.innerHTML += cardHTML;
 
-                    // Generación del QR Dorado sin fondo blanco (color primario #dcb36c sobre transparente)
+                    // QR Dorado con Contraste Champagne e Intensidad Calibrada para Escaneo Rápido
                     const tempDiv = document.createElement("div");
                     new QRCode(tempDiv, {
                         text: urlPermanente,
-                        width: 78,
-                        height: 78,
-                        colorDark: "#dcb36c",
-                        colorLight: "#00000000",
-                        correctLevel: QRCode.CorrectLevel.H
+                        width: 82,
+                        height: 82,
+                        colorDark: "#f0d29a", // Tono dorado champagne de alto contraste
+                        colorLight: "#00000000", // Fondo transparente
+                        correctLevel: QRCode.CorrectLevel.H // Máxima tolerancia de lectura (30%)
                     });
 
                     setTimeout(() => {
@@ -353,8 +351,8 @@
                         <title>Guardar QR - ID ${idTarjeta}</title>
                         <style>
                             body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-                            img { width: 220px; height: 220px; background: #121214; padding: 10px; border-radius: 8px; border: 1px solid #dcb36c; margin-bottom: 20px; }
-                            p { color: #dcb36c; font-size: 1.1rem; line-height: 1.5; max-width: 300px; }
+                            img { width: 220px; height: 220px; background: #0d0d0f; padding: 15px; border-radius: 8px; border: 1px solid #e2c085; margin-bottom: 20px; }
+                            p { color: #e2c085; font-size: 1.1rem; line-height: 1.5; max-width: 300px; }
                         </style>
                     </head>
                     <body>
@@ -393,7 +391,7 @@
                             <style>
                                 body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
                                 img { width: 100%; max-width: 350px; border-radius: 12px; margin-bottom: 20px; }
-                                p { color: #dcb36c; font-size: 1rem; line-height: 1.5; max-width: 320px; }
+                                p { color: #e2c085; font-size: 1rem; line-height: 1.5; max-width: 320px; }
                             </style>
                         </head>
                         <body>
@@ -426,10 +424,7 @@
                         .physical-card {
                             width: 85mm;
                             height: 50mm;
-                            background-color: #121214 !important;
-                            background-image: radial-gradient(#1c1c20 1px, transparent 1px), radial-gradient(#0a0a0c 1px, #121214 1px) !important;
-                            background-size: 4px 4px !important;
-                            background-position: 0 0, 2px 2px !important;
+                            background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%) !important;
                             border-radius: 12px;
                             display: flex;
                             flex-direction: column;
@@ -440,9 +435,9 @@
                             -webkit-print-color-adjust: exact;
                             print-color-adjust: exact;
                         }
-                        .brand-logo-centered { color: #dcb36c; font-size: 2.1rem; font-weight: 400; font-family: sans-serif; letter-spacing: 0.5px; }
+                        .brand-logo-centered { color: #e2c085; font-size: 2.2rem; font-weight: 400; font-family: sans-serif; letter-spacing: 0.5px; }
                         .qr-frame-minimal { background: transparent; display: flex; align-items: center; justify-content: center; }
-                        .qr-frame-minimal img, .qr-frame-minimal canvas { display: block; width: 78px !important; height: 78px !important; }
+                        .qr-frame-minimal img, .qr-frame-minimal canvas { display: block; width: 82px !important; height: 82px !important; }
                     </style>
                 </head>
                 <body>
