@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirigiendo... | linkea.fy</title>
+</head>
+<body style="background: #0b0b0b; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif;">
+    <p>Redirigiendo a tu destino...</p>
+
+    <script>
+        async function redirigir() {
+            const currentId = "0001"; // Cambiar este ID según la carpeta (ej. "0002" para t/0002/)
+            
+            try {
+                // Buscamos el archivo JSON en la raíz del repositorio
+                const response = await fetch(`../../tarjetas.json?_=${new Date().getTime()}`);
+                const tarjetas = await response.json();
+                
+                const tarjeta = tarjetas.find(t => t.id === currentId);
+                
+                if (tarjeta && tarjeta.estado === 'activa' && tarjeta.link) {
+                    window.location.replace(tarjeta.link); // Redirección limpia sin dejar historial basura
+                } else {
+                    document.body.innerHTML = "<h2 style='color:#d4af37;'>Esta tarjeta se encuentra inactiva o no existe.</h2>";
+                }
+            } catch (e) {
+                document.body.innerHTML = "<h2 style='color:#ff5555;'>Error de conexión con el sistema de redirección.</h2>";
+            }
+        }
+
+        redirigir();
+    </script>
+</body>
+</html>
