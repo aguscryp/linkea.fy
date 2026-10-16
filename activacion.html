@@ -350,7 +350,7 @@
 
     <script>
         // ==========================================
-        // EXTRACCIÓN AUTOMÁTICA DEL ID DESDE LA URL
+        // 1. EXTRACCIÓN AUTOMÁTICA DEL ID DESDE LA URL
         // ==========================================
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
         let currentId = "0001";
@@ -363,7 +363,39 @@
             }
         }
 
+        // Mostrar ID preliminar
         document.getElementById('badgeId').innerText = `Tarjeta #${currentId}`;
+
+        // ==========================================
+        // 2. LECTURA EN TIEMPO REAL DESDE tarjetas.json
+        // ==========================================
+        async function checkCardData() {
+            try {
+                // Ajusta la ruta relativa de tarjetas.json según dónde esté guardado este archivo
+                const response = await fetch('../../tarjetas.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Si data es un objeto o array, buscamos si el ID existe en el JSON centralizado
+                    let tarjetaInfo = null;
+                    if (Array.isArray(data)) {
+                        tarjetaInfo = data.find(item => item.id === currentId || item.id == Number(currentId));
+                    } else if (typeof data === 'object' && data !== null) {
+                        tarjetaInfo = data[currentId];
+                    }
+
+                    // Si ya fue asignado a un negocio en el JSON, opcionalmente puedes redirigir o actualizar datos
+                    if (tarjetaInfo && tarjetaInfo.urlDestino) {
+                        // Opcional: Si deseas que redirija automáticamente cuando se active:
+                        // window.location.href = tarjetaInfo.urlDestino;
+                    }
+                }
+            } catch (error) {
+                console.log("Modo local o JSON pendiente de sincronización:", error);
+            }
+        }
+
+        checkCardData();
 
         // Generar el código QR dinámico apuntando a la URL actual
         const currentUrl = window.location.href;
@@ -376,12 +408,12 @@
             correctLevel: QRCode.CorrectLevel.H
         });
 
-        // Configurar enlace de WhatsApp con el ID automático
+        // Configurar enlace de WhatsApp con el ID automático en tiempo real
         const mensajeWa = encodeURIComponent(`Hola, tengo en mis manos la tarjeta linkea.fy con el ID #${currentId} y quiero activarla para mi negocio.`);
         document.getElementById('whatsappBtn').href = `https://wa.me/TU_NUMERO_DE_WHATSAPP?text=${mensajeWa}`;
 
         // ==========================================
-        // CONTROL 3D TILT & GIRO ÉPICO CON SOPORTE TÁCTIL SEGURO
+        // 3. CONTROL 3D TILT & GIRO ÉPICO TÁCTIL SEGURO
         // ==========================================
         const container = document.getElementById('tiltContainer');
         const scene = document.getElementById('cardScene');
