@@ -144,13 +144,17 @@
             border: 1px solid rgba(223, 177, 91, 0.38);
             padding: 20px;
             overflow: hidden;
-            transform: rotateY(0deg);
         }
 
-        /* Corregido: el dorso ahora invierte correctamente su contenido sin mezclarse */
+        .card-front {
+            transform: rotateY(0deg);
+            z-index: 2;
+        }
+
         .card-back {
             transform: rotateY(180deg);
             text-align: center;
+            z-index: 1;
         }
 
         .qr-frame-minimal {
@@ -374,7 +378,7 @@
 
         // Configurar enlace de WhatsApp con el ID automático
         const mensajeWa = encodeURIComponent(`Hola, tengo en mis manos la tarjeta linkea.fy con el ID #${currentId} y quiero activarla para mi negocio.`);
-        document.getElementById('whatsappBtn'].href = `https://wa.me/TU_NUMERO_DE_WHATSAPP?text=${mensajeWa}`;
+        document.getElementById('whatsappBtn').href = `https://wa.me/TU_NUMERO_DE_WHATSAPP?text=${mensajeWa}`;
 
         // ==========================================
         // CONTROL 3D TILT & GIRO ÉPICO CON SOPORTE TÁCTIL SEGURO
