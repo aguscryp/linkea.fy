@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración | linkea.fy</title>
-    <!-- Librerías para QRs y exportación HD -->
+    <!-- Librería QR oficial de alta compatibilidad -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --bg-color: #000000;
-            --card-dark: #0d0d0d;
-            --gold-primary: #e2c085;
-            --gold-bright: #f0d29a;
+            --card-dark: #121214;
+            --gold-primary: #ddb668;
             --text-main: #ffffff;
             --text-muted: #777777;
         }
@@ -98,21 +97,20 @@
         .badge-inactiva { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
 
         /* ==========================================================
-           DISEÑO METÁLICO HD SATINADO (Sin Píxeles ni Puntitos - 8.5 x 5 cm)
+           TARJETA FÍSICA IDENTICA A META AI / MUESTRA (8.5 x 5 cm)
            ========================================================== */
         .physical-card {
             width: 380px;
             height: 224px;
-            /* Fondo degradado metálico pulido súper fluido en HD */
-            background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%);
+            background: radial-gradient(circle at center, #1a1a1d 0%, #101012 60%, #08080a 100%);
             border-radius: 12px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
             position: relative;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.05);
             margin-bottom: 25px;
             overflow: hidden;
             padding: 20px;
@@ -121,27 +119,27 @@
         /* Logotipo dorado limpio */
         .brand-logo-centered {
             color: var(--gold-primary);
-            font-size: 2.2rem;
+            font-size: 2.3rem;
             font-weight: 400;
             letter-spacing: 0.5px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            text-shadow: 0 0 2px rgba(226, 192, 133, 0.3);
+            text-shadow: 0 0 2px rgba(221, 182, 104, 0.2);
         }
 
-        /* Contenedor del QR Dorado optimizado para lectura instantánea */
+        /* Contenedor del QR Dorado optimizado */
         .qr-frame-minimal {
             background: transparent;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            filter: drop-shadow(0 0 1px rgba(240, 210, 154, 0.2));
         }
 
         .qr-frame-minimal img, .qr-frame-minimal canvas {
             display: block;
-            width: 82px !important;
-            height: 82px !important;
+            width: 90px !important;
+            height: 90px !important;
+            image-rendering: pixelated;
         }
 
         /* ==========================================
@@ -177,7 +175,7 @@
         .btn:hover {
             background: var(--gold-primary);
             color: #000000;
-            box-shadow: 0 0 15px rgba(226, 192, 133, 0.3);
+            box-shadow: 0 0 15px rgba(221, 182, 104, 0.3);
         }
 
         .btn-full {
@@ -222,7 +220,7 @@
 
     <header>
         <h1>linkea.fy</h1>
-        <p>Panel de Control • Tarjetas Metal Edition HD</p>
+        <p>Panel de Control • Tarjetas Minimal Gold Edition</p>
     </header>
 
     <div class="container" id="tarjetas-container">
@@ -262,7 +260,7 @@
                                 <span class="badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
                             </div>
 
-                            <!-- Tarjeta Física Metal HD Degradada -->
+                            <!-- Tarjeta Física Idéntica -->
                             <div class="physical-card" id="${cardIdUnico}">
                                 <div class="brand-logo-centered">linkea.fy</div>
                                 <div class="qr-frame-minimal" id="${qrIdUnico}"></div>
@@ -280,15 +278,16 @@
 
                     container.innerHTML += cardHTML;
 
-                    // QR Dorado con Contraste Champagne e Intensidad Calibrada para Escaneo Rápido
+                    // CONFIGURACIÓN DE ALTA LECTURA:
+                    // Usamos Nivel L (Low) o M para que tenga POCOS PUNTOS Y MUY GRANDES (igual que la imagen de Meta AI)
                     const tempDiv = document.createElement("div");
                     new QRCode(tempDiv, {
                         text: urlPermanente,
-                        width: 82,
-                        height: 82,
-                        colorDark: "#f0d29a", // Tono dorado champagne de alto contraste
-                        colorLight: "#00000000", // Fondo transparente
-                        correctLevel: QRCode.CorrectLevel.H // Máxima tolerancia de lectura (30%)
+                        width: 180, // Renderizado en alta resolución interna
+                        height: 180,
+                        colorDark: "#ddb668", // Dorado exactamente calibrado
+                        colorLight: "#101012", // Fondo oscuro a tono con la tarjeta para engañar al sensor de cámara
+                        correctLevel: QRCode.CorrectLevel.M
                     });
 
                     setTimeout(() => {
@@ -324,7 +323,7 @@
             document.getElementById('cardModal').style.display = 'none';
         }
 
-        // 2. Descargar SOLO EL QR (Soporte inteligente para iPhone/iOS y Android)
+        // 2. Descargar SOLO EL QR (Soporte inteligente para iPhone y Android)
         function descargarQR(qrContainerId, idTarjeta) {
             const qrContainer = document.getElementById(qrContainerId);
             const qrImg = qrContainer.querySelector("img") || qrContainer.querySelector("canvas");
@@ -351,8 +350,8 @@
                         <title>Guardar QR - ID ${idTarjeta}</title>
                         <style>
                             body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-                            img { width: 220px; height: 220px; background: #0d0d0f; padding: 15px; border-radius: 8px; border: 1px solid #e2c085; margin-bottom: 20px; }
-                            p { color: #e2c085; font-size: 1.1rem; line-height: 1.5; max-width: 300px; }
+                            img { width: 220px; height: 220px; background: #101012; padding: 15px; border-radius: 8px; border: 1px solid #ddb668; margin-bottom: 20px; }
+                            p { color: #ddb668; font-size: 1.1rem; line-height: 1.5; max-width: 300px; }
                         </style>
                     </head>
                     <body>
@@ -369,7 +368,7 @@
             }
         }
 
-        // 3. Descargar Tarjeta completa a Fotos en HD (Soporte iPhone y Android)
+        // 3. Descargar Tarjeta completa a Fotos en HD
         function descargarFoto(cardId, idTarjeta) {
             const elemento = document.getElementById(cardId);
             html2canvas(elemento, { 
@@ -391,7 +390,7 @@
                             <style>
                                 body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
                                 img { width: 100%; max-width: 350px; border-radius: 12px; margin-bottom: 20px; }
-                                p { color: #e2c085; font-size: 1rem; line-height: 1.5; max-width: 320px; }
+                                p { color: #ddb668; font-size: 1rem; line-height: 1.5; max-width: 320px; }
                             </style>
                         </head>
                         <body>
@@ -424,20 +423,20 @@
                         .physical-card {
                             width: 85mm;
                             height: 50mm;
-                            background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%) !important;
+                            background: radial-gradient(circle at center, #1a1a1d 0%, #101012 60%, #08080a 100%) !important;
                             border-radius: 12px;
                             display: flex;
                             flex-direction: column;
                             justify-content: center;
                             align-items: center;
-                            gap: 16px;
+                            gap: 14px;
                             position: relative;
                             -webkit-print-color-adjust: exact;
                             print-color-adjust: exact;
                         }
-                        .brand-logo-centered { color: #e2c085; font-size: 2.2rem; font-weight: 400; font-family: sans-serif; letter-spacing: 0.5px; }
+                        .brand-logo-centered { color: #ddb668; font-size: 2.3rem; font-weight: 400; font-family: sans-serif; letter-spacing: 0.5px; }
                         .qr-frame-minimal { background: transparent; display: flex; align-items: center; justify-content: center; }
-                        .qr-frame-minimal img, .qr-frame-minimal canvas { display: block; width: 82px !important; height: 82px !important; }
+                        .qr-frame-minimal img, .qr-frame-minimal canvas { display: block; width: 90px !important; height: 90px !important; }
                     </style>
                 </head>
                 <body>
