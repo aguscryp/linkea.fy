@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración | linkea.fy</title>
-    <!-- Librerías integradas para QRs y conversión a Imagen (html2canvas) -->
+    <!-- Librerías integradas para QRs personalizados y alta definición -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -52,7 +52,7 @@
             max-width: 1100px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
             gap: 35px;
         }
 
@@ -65,11 +65,6 @@
             flex-direction: column;
             align-items: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            transition: transform 0.3s ease;
-        }
-
-        .card-box:hover {
-            border-color: rgba(223, 177, 91, 0.4);
         }
 
         .card-meta {
@@ -97,32 +92,31 @@
         .badge-activa { background: rgba(40, 167, 69, 0.15); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.3); }
         .badge-inactiva { background: rgba(231, 76, 60, 0.15); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.3); }
 
-        /* ==========================================
-           DISEÑO DE TARJETA BLACK GOLD (8.5 x 5 cm)
-           Proporción real de tarjeta de crédito (85mm x 50mm)
-           ========================================== */
+        /* ==========================================================
+           DISEÑO DE TARJETA BLACK GOLD (Alta Definición / Proporción Real)
+           ========================================================== */
         .physical-card {
-            width: 340px;
-            height: 200px;
-            background: radial-gradient(circle at center, #1c1c1c 0%, #0d0d0d 100%);
+            width: 380px;
+            height: 224px; /* Proporción exacta 8.5 x 5 cm */
+            background: radial-gradient(circle at center, #181818 0%, #0a0a0a 100%);
             border: 1.5px solid var(--gold);
-            border-radius: 12px;
-            padding: 20px 24px;
+            border-radius: 14px;
+            padding: 24px 28px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            box-shadow: 0 8px 25px rgba(223, 177, 91, 0.12);
+            box-shadow: 0 10px 30px rgba(223, 177, 91, 0.15);
             margin-bottom: 22px;
             overflow: hidden;
         }
 
-        /* Textura simulada sutil tipo tarjeta premium */
+        /* Textura sutil premium de alta calidad */
         .physical-card::before {
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.04"/%3E%3C/svg%3E');
+            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.05"/%3E%3C/svg%3E');
             pointer-events: none;
         }
 
@@ -134,9 +128,9 @@
 
         .brand-logo {
             color: var(--gold);
-            font-size: 1.25rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
         }
 
         .card-middle {
@@ -147,24 +141,23 @@
 
         .contactless {
             color: var(--gold);
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             opacity: 0.85;
             transform: rotate(90deg);
             letter-spacing: -3px;
         }
 
+        /* QR Dorado sin recuadro blanco (fondo transparente integrado) */
         .qr-frame {
-            background: #ffffff;
-            padding: 5px;
-            border-radius: 6px;
+            background: transparent;
+            padding: 0;
             display: inline-block;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
 
-        .qr-frame img {
+        .qr-frame canvas, .qr-frame img {
             display: block;
-            width: 68px !important;
-            height: 68px !important;
+            width: 78px !important;
+            height: 78px !important;
         }
 
         .card-bottom {
@@ -175,20 +168,20 @@
 
         .card-title-label {
             color: var(--gold-light);
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             font-weight: 500;
             letter-spacing: 0.5px;
         }
 
         .card-id-label {
             color: var(--text-muted);
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             letter-spacing: 1.5px;
             text-transform: uppercase;
         }
 
         /* ==========================================
-           BOTONES DE ACCIÓN INDIVIDUALES
+           BOTONES DE ACCIÓN
            ========================================== */
         .actions-grid {
             width: 100%;
@@ -225,12 +218,12 @@
             grid-column: span 2;
         }
 
-        /* Modal para Ver Tarjeta en Grande */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.88);
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -239,7 +232,7 @@
 
         .modal-content {
             background: var(--card-dark);
-            padding: 30px;
+            padding: 35px;
             border-radius: 16px;
             border: 1px solid var(--gold);
             display: flex;
@@ -263,11 +256,11 @@
 
     <header>
         <h1>linkea.fy</h1>
-        <p>Panel de Control • Tarjetas Black Gold (8.5 x 5 cm)</p>
+        <p>Panel de Control • Tarjetas Black Gold HD (8.5 x 5 cm)</p>
     </header>
 
     <div class="container" id="tarjetas-container">
-        <!-- Se cargan dinámicamente -->
+        <!-- Contenido dinámico -->
     </div>
 
     <!-- Modal para ver tarjeta ampliada -->
@@ -303,7 +296,7 @@
                                 <span class="badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
                             </div>
 
-                            <!-- Tarjeta Física Real Black Gold (ID único para captura individual) -->
+                            <!-- Tarjeta Física Black Gold HD -->
                             <div class="physical-card" id="${cardIdUnico}">
                                 <div class="card-top">
                                     <div class="brand-logo">linkea.fy</div>
@@ -315,7 +308,7 @@
                                 </div>
                                 <div class="card-bottom">
                                     <div class="card-title-label">Black Gold</div>
-                                    <div class="card-id-label">Authorized</div>
+                                    <div class="card-id-label">Secure QR</div>
                                 </div>
                             </div>
 
@@ -330,13 +323,13 @@
 
                     container.innerHTML += cardHTML;
 
-                    // Generar QR dentro del contenedor correspondiente
+                    // Generar QR con puntos dorados (#dfb15b) y fondo transparente (#00000000)
                     new QRCode(document.getElementById(qrIdUnico), {
                         text: urlPermanente,
-                        width: 68,
-                        height: 68,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
+                        width: 78,
+                        height: 78,
+                        colorDark: "#dfb15b",
+                        colorLight: "#00000000",
                         correctLevel: QRCode.CorrectLevel.H
                     });
                 });
@@ -345,7 +338,7 @@
                 console.error('Error:', error);
                 document.getElementById('tarjetas-container').innerHTML = `
                     <p style="color: #e74c3c; text-align: center; grid-column: 1/-1;">
-                        Error al cargar las tarjetas. Verifica que <strong>tarjetas.json</strong> esté en la raíz del repositorio.
+                        Error al cargar las tarjetas. Verifica que <strong>tarjetas.json</strong> esté en la raíz.
                     </p>`;
             }
         }
@@ -364,21 +357,25 @@
             document.getElementById('cardModal').style.display = 'none';
         }
 
-        // 2. Descargar a Fotos de forma individual usando html2canvas
+        // 2. Descargar a Fotos en Full HD real (Escala 4x para máxima nitidez sin pixelarse)
         function descargarFoto(cardId, idTarjeta) {
             const elemento = document.getElementById(cardId);
-            html2canvas(elemento, { scale: 3, backgroundColor: null }).then(canvas => {
+            html2canvas(elemento, { 
+                scale: 4, // Multiplicador Full HD / Ultra Nitidez para impresión
+                backgroundColor: null,
+                useCORS: true
+            }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `tarjeta-${idTarjeta}-linkeafy.png`;
-                link.href = canvas.toDataURL('image/png');
+                link.download = `tarjeta-${idTarjeta}-linkeafy-hd.png`;
+                link.href = canvas.toDataURL('image/png', 1.0);
                 link.click();
             });
         }
 
-        // 3. Imprimir / Guardar a PDF de manera individual
+        // 3. Imprimir / Guardar PDF con proporciones reales de imprenta (8.5 x 5 cm)
         function descargarPDF(cardId, nombre) {
             const elemento = document.getElementById(cardId).outerHTML;
-            const ventanaPrint = window.open('', '_blank', 'width=800,height=600');
+            const ventanaPrint = window.open('', '_blank', 'width=900,height=700');
             ventanaPrint.document.write(`
                 <!DOCTYPE html>
                 <html lang="es">
@@ -390,7 +387,7 @@
                         .physical-card {
                             width: 85mm;
                             height: 50mm;
-                            background: radial-gradient(circle at center, #1c1c1c 0%, #0d0d0d 100%) !important;
+                            background: radial-gradient(circle at center, #181818 0%, #0a0a0a 100%) !important;
                             border: 1.5px solid #dfb15b;
                             border-radius: 12px;
                             padding: 20px 24px;
@@ -402,11 +399,11 @@
                             print-color-adjust: exact;
                         }
                         .card-top { display: flex; justify-content: space-between; align-items: center; }
-                        .brand-logo { color: #dfb15b; font-size: 1.25rem; font-weight: 700; letter-spacing: 1.5px; font-family: sans-serif; }
+                        .brand-logo { color: #dfb15b; font-size: 1.3rem; font-weight: 700; letter-spacing: 2px; font-family: sans-serif; }
                         .card-middle { display: flex; align-items: center; justify-content: space-between; }
-                        .contactless { color: #dfb15b; font-size: 1.2rem; transform: rotate(90deg); letter-spacing: -3px; }
-                        .qr-frame { background: #ffffff; padding: 5px; border-radius: 6px; display: inline-block; }
-                        .qr-frame img { display: block; width: 68px !important; height: 68px !important; }
+                        .contactless { color: #dfb15b; font-size: 1.3rem; transform: rotate(90deg); letter-spacing: -3px; }
+                        .qr-frame { background: transparent; padding: 0; display: inline-block; }
+                        .qr-frame canvas, .qr-frame img { display: block; width: 72px !important; height: 72px !important; }
                         .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
                         .card-title-label { color: #f5e6ca; font-size: 0.95rem; font-weight: 500; font-family: sans-serif; }
                         .card-id-label { color: #888; font-size: 0.65rem; letter-spacing: 1.5px; font-family: sans-serif; text-transform: uppercase; }
