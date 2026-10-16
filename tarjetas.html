@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración | linkea.fy</title>
-    <!-- Librerías para QRs y exportación HD -->
+    <!-- Librería estándar de códigos QR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Librería para descarga de imágenes en Alta Definición -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
@@ -105,7 +106,7 @@
             height: 240px;
             background: linear-gradient(135deg, #111111 0%, #030303 100%);
             border: 1px solid var(--gold);
-            border-radius: 8px; /* Ligeramente estilizada con elegancia de tarjeta de metal */
+            border-radius: 8px;
             padding: 30px;
             display: flex;
             flex-direction: column;
@@ -135,7 +136,7 @@
             justify-content: space-between;
         }
 
-        /* Chip Bancario Empresarial Avanzado (Estilo EMV Realista) */
+        /* Chip Bancario Empresarial Avanzado */
         .chip-box {
             display: flex;
             flex-direction: column;
@@ -176,9 +177,14 @@
             border-radius: 3px;
             display: inline-block;
             box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            width: 84px;
+            height: 84px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .qr-frame canvas, .qr-frame img {
+        .qr-frame img {
             display: block;
             width: 74px !important;
             height: 74px !important;
@@ -331,7 +337,7 @@
                                 <span class="badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
                             </div>
 
-                            <!-- Tarjeta Física Suprema Black Gold (Sin nombre de negocio, solo marca y edición) -->
+                            <!-- Tarjeta Física Suprema Black Gold -->
                             <div class="physical-card" id="${cardIdUnico}">
                                 <div class="card-top">
                                     <div class="brand-logo">linkea.fy</div>
@@ -362,12 +368,9 @@
 
                     container.innerHTML += cardHTML;
 
-                    // CORRECCIÓN CLAVE: Limpiar el contenedor antes de generar el QR para evitar que se solapen o desaparezcan al haber múltiples tarjetas
-                    const qrContainer = document.getElementById(qrIdUnico);
-                    qrContainer.innerHTML = "";
-
-                    // Generar QR de alto contraste para lectura instantánea
-                    new QRCode(qrContainer, {
+                    // GENERACIÓN SEGURA DE QR: Usamos un elemento temporal para evitar fallos de renderizado múltiple en GitHub Pages
+                    const tempDiv = document.createElement("div");
+                    new QRCode(tempDiv, {
                         text: urlPermanente,
                         width: 74,
                         height: 74,
@@ -375,6 +378,16 @@
                         colorLight: "#ffffff",
                         correctLevel: QRCode.CorrectLevel.H
                     });
+
+                    // Esperamos a que la librería genere el elemento QR y lo pasamos de forma limpia al contenedor definitivo
+                    setTimeout(() => {
+                        const qrImg = tempDiv.querySelector("img") || tempDiv.querySelector("canvas");
+                        const destinoQR = document.getElementById(qrIdUnico);
+                        if (destinoQR && qrImg) {
+                            destinoQR.innerHTML = "";
+                            destinoQR.appendChild(qrImg);
+                        }
+                    }, 50);
                 });
 
             } catch (error) {
@@ -461,8 +474,8 @@
                                 linear-gradient(0deg, transparent 42%, rgba(0,0,0,0.25) 42%, rgba(0,0,0,0.25) 58%, transparent 58%);
                         }
                         .contactless-icon { color: #d4af37; font-size: 1.1rem; letter-spacing: -2px; }
-                        .qr-frame { background: #ffffff; padding: 5px; border-radius: 3px; display: inline-block; }
-                        .qr-frame canvas, .qr-frame img { display: block; width: 74px !important; height: 74px !important; }
+                        .qr-frame { background: #ffffff; padding: 5px; border-radius: 3px; display: inline-block; width: 84px; height: 84px; display: flex; align-items: center; justify-content: center; }
+                        .qr-frame img { display: block; width: 74px !important; height: 74px !important; }
                         .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
                         .card-titles-group { display: flex; flex-direction: column; gap: 3px; }
                         .card-title-main { color: #ffffff; font-size: 1.1rem; font-weight: 500; letter-spacing: 2px; font-family: sans-serif; text-transform: uppercase; }
