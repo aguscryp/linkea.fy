@@ -9,20 +9,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --bg-color: #030303;
+            --bg-color: #000000;
             --card-dark: #0a0a0a;
-            --gold-primary: #dfb15b;
-            --gold-light: #f9f1df;
-            --gold-dark: #996515;
+            --gold-primary: #dcb36c;
+            --gold-light: #f5e3bc;
             --text-main: #ffffff;
-            --text-muted: #888888;
+            --text-muted: #777777;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
@@ -38,7 +37,7 @@
 
         header h1 {
             color: var(--gold-primary);
-            font-size: 2.4rem;
+            font-size: 2.2rem;
             letter-spacing: 4px;
             text-transform: uppercase;
             font-weight: 300;
@@ -46,8 +45,8 @@
 
         header p {
             color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 10px;
+            font-size: 0.85rem;
+            margin-top: 8px;
             letter-spacing: 1.5px;
             text-transform: uppercase;
         }
@@ -56,19 +55,19 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(410px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
             gap: 40px;
         }
 
         .card-box {
-            background: var(--card-dark);
-            border: 1px solid #1c1c1c;
+            background: #111111;
+            border: 1px solid #222222;
             border-radius: 14px;
             padding: 28px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.9);
         }
 
         .card-meta {
@@ -80,7 +79,7 @@
         }
 
         .card-meta h3 {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 500;
             letter-spacing: 0.5px;
             color: #ddd;
@@ -99,126 +98,56 @@
         .badge-inactiva { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
 
         /* ==========================================================
-           DISEÑO SUPREMO BANCARIO - BLACK CARD (8.5 x 5 cm)
+           REPRODUCCIÓN IDÉNTICA A LA IMAGEN DE MUESTRA (8.5 x 5 cm)
            ========================================================== */
         .physical-card {
-            width: 410px;
-            height: 240px;
-            background: radial-gradient(circle at 70% 20%, #1a1a1a 0%, #080808 70%, #020202 100%);
-            border: 1.5px solid var(--gold-primary);
-            border-radius: 10px;
-            padding: 30px;
+            width: 380px;
+            height: 224px;
+            background-color: #121214;
+            /* Textura de papel mate negro carbonizado idéntico al de la foto */
+            background-image: radial-gradient(#1c1c20 1px, transparent 1px), radial-gradient(#0a0a0c 1px, #121214 1px);
+            background-size: 4px 4px;
+            background-position: 0 0, 2px 2px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
             position: relative;
-            box-shadow: 0 25px 50px rgba(223, 177, 91, 0.18), inset 0 0 20px rgba(255,255,255,0.04);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
             margin-bottom: 25px;
             overflow: hidden;
+            padding: 20px;
         }
 
-        .card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .brand-logo {
+        /* Logotipo centrado idéntico */
+        .brand-logo-centered {
             color: var(--gold-primary);
-            font-size: 1.4rem;
-            font-weight: 300;
-            letter-spacing: 3px;
-            text-transform: lowercase;
+            font-size: 2.1rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            text-shadow: 0 0 1px rgba(220, 179, 108, 0.3);
         }
 
-        .card-middle {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        /* CHIP EMV BANCARIO REALISTA SUPREMO */
-        .chip-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: flex-start;
-        }
-
-        .emv-chip {
-            width: 50px;
-            height: 38px;
-            background: linear-gradient(135deg, #fef2cc 0%, #dfb15b 45%, #996515 100%);
-            border-radius: 5px;
-            position: relative;
-            box-shadow: inset 0 1px 3px rgba(255,255,255,0.8), 0 5px 10px rgba(0,0,0,0.6);
-            overflow: hidden;
-            border: 0.5px solid #b8860b;
-        }
-
-        /* Patrón de circuitos de oro grabados en el chip */
-        .emv-chip::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(90deg, transparent 33%, rgba(0,0,0,0.3) 33%, rgba(0,0,0,0.3) 36%, transparent 36%),
-                linear-gradient(90deg, transparent 66%, rgba(0,0,0,0.3) 66%, rgba(0,0,0,0.3) 69%, transparent 69%),
-                linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.3) 48%, rgba(0,0,0,0.3) 52%, transparent 52%);
-        }
-
-        .emv-chip::after {
-            content: "";
-            position: absolute;
-            top: 25%; left: 15%; right: 15%; bottom: 25%;
-            border: 1px solid rgba(0,0,0,0.35);
-            border-radius: 2px;
-        }
-
-        .contactless-waves {
-            color: var(--gold-primary);
-            font-size: 1.2rem;
-            letter-spacing: -2px;
-            opacity: 0.85;
-            transform: rotate(90deg);
-        }
-
-        /* Marco QR Corporativo */
-        .qr-frame {
-            background: #ffffff;
-            padding: 5px;
-            border-radius: 4px;
-            display: inline-block;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.8);
-            width: 84px;
-            height: 84px;
+        /* Contenedor del QR dorado directo sobre el papel negro */
+        .qr-frame-minimal {
+            background: transparent;
+            padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .qr-frame img {
+        .qr-frame-minimal img, .qr-frame-minimal canvas {
             display: block;
-            width: 74px !important;
-            height: 74px !important;
-        }
-
-        .card-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-
-        .card-title-main {
-            color: var(--text-main);
-            font-size: 1.15rem;
-            font-weight: 500;
-            letter-spacing: 3px;
-            text-transform: uppercase;
+            width: 78px !important;
+            height: 78px !important;
         }
 
         /* ==========================================
-           BOTONES DE ACCIÓN (Grid Profesional)
+           BOTONES DE ACCIÓN
            ========================================== */
         .actions-grid {
             width: 100%;
@@ -249,8 +178,8 @@
 
         .btn:hover {
             background: var(--gold-primary);
-            color: var(--bg-color);
-            box-shadow: 0 0 15px rgba(223, 177, 91, 0.4);
+            color: #000000;
+            box-shadow: 0 0 15px rgba(220, 179, 108, 0.3);
         }
 
         .btn-full {
@@ -270,7 +199,7 @@
         }
 
         .modal-content {
-            background: var(--card-dark);
+            background: #111111;
             padding: 40px;
             border-radius: 12px;
             border: 1px solid var(--gold-primary);
@@ -295,7 +224,7 @@
 
     <header>
         <h1>linkea.fy</h1>
-        <p>Corporate Card Management • Black Gold Edition</p>
+        <p>Panel de Control • Tarjetas Minimalistas Gold</p>
     </header>
 
     <div class="container" id="tarjetas-container">
@@ -335,21 +264,10 @@
                                 <span class="badge badge-${tarjeta.estado}">${tarjeta.estado}</span>
                             </div>
 
-                            <!-- Tarjeta Física Suprema Black Gold (Minimalista & Bancaria) -->
+                            <!-- Tarjeta Física Idéntica a la Imagen de Muestra -->
                             <div class="physical-card" id="${cardIdUnico}">
-                                <div class="card-top">
-                                    <div class="brand-logo">linkea.fy</div>
-                                </div>
-                                <div class="card-middle">
-                                    <div class="chip-container">
-                                        <div class="emv-chip"></div>
-                                        <div class="contactless-waves">&#187;&#187;</div>
-                                    </div>
-                                    <div class="qr-frame" id="${qrIdUnico}"></div>
-                                </div>
-                                <div class="card-bottom">
-                                    <div class="card-title-main">Black Gold</div>
-                                </div>
+                                <div class="brand-logo-centered">linkea.fy</div>
+                                <div class="qr-frame-minimal" id="${qrIdUnico}"></div>
                             </div>
 
                             <!-- Opciones individuales -->
@@ -364,14 +282,14 @@
 
                     container.innerHTML += cardHTML;
 
-                    // Generación segura del QR con contenedor temporal
+                    // Generación del QR Dorado sin fondo blanco (color primario #dcb36c sobre transparente)
                     const tempDiv = document.createElement("div");
                     new QRCode(tempDiv, {
                         text: urlPermanente,
-                        width: 74,
-                        height: 74,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
+                        width: 78,
+                        height: 78,
+                        colorDark: "#dcb36c",
+                        colorLight: "#00000000",
                         correctLevel: QRCode.CorrectLevel.H
                     });
 
@@ -408,7 +326,7 @@
             document.getElementById('cardModal').style.display = 'none';
         }
 
-        // 2. Descargar SOLO EL QR de forma inteligente (Compatible con iPhone y Android)
+        // 2. Descargar SOLO EL QR (Soporte inteligente para iPhone/iOS y Android)
         function descargarQR(qrContainerId, idTarjeta) {
             const qrContainer = document.getElementById(qrContainerId);
             const qrImg = qrContainer.querySelector("img") || qrContainer.querySelector("canvas");
@@ -418,17 +336,14 @@
                 return;
             }
 
-            // Convertir canvas o imagen de QR a URL de datos de alta calidad
             let imageUrl = qrImg.src;
             if (qrImg.tagName === "CANVAS") {
                 imageUrl = qrImg.toDataURL("image/png");
             }
 
-            // Detección estricta de Dispositivo iOS (iPhone / iPad)
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
             if (isIOS) {
-                // En iPhone, Safari bloquea la descarga directa automática. Abrimos ventana optimizada para guardar en Fotos.
                 const win = window.open("", "_blank");
                 win.document.write(`
                     <!DOCTYPE html>
@@ -437,19 +352,18 @@
                         <meta charset="UTF-8">
                         <title>Guardar QR - ID ${idTarjeta}</title>
                         <style>
-                            body { background: #080808; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-                            img { width: 220px; height: 220px; border-radius: 8px; border: 3px solid #dfb15b; background: #fff; padding: 10px; margin-bottom: 20px; }
-                            p { color: #dfb15b; font-size: 1.1rem; line-height: 1.5; max-width: 300px; }
+                            body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+                            img { width: 220px; height: 220px; background: #121214; padding: 10px; border-radius: 8px; border: 1px solid #dcb36c; margin-bottom: 20px; }
+                            p { color: #dcb36c; font-size: 1.1rem; line-height: 1.5; max-width: 300px; }
                         </style>
                     </head>
                     <body>
                         <img src="${imageUrl}" alt="Código QR ${idTarjeta}">
-                        <p>Mantén presionado el código QR con tu dedo y selecciona <b>"Añadir a Fotos"</b> o <b>"Guardar en Fotos"</b>.</p>
+                        <p>Mantén presionado el código QR con tu dedo y selecciona <b>"Añadir a Fotos"</b>.</p>
                     </body>
                     </html>
                 `);
             } else {
-                // Descarga automática directa para Android y Computadora
                 const link = document.createElement('a');
                 link.download = `qr-linkeafy-${idTarjeta}.png`;
                 link.href = imageUrl;
@@ -457,7 +371,7 @@
             }
         }
 
-        // 3. Descargar Tarjeta completa a Fotos (con soporte inteligente para iPhone)
+        // 3. Descargar Tarjeta completa a Fotos en HD (Soporte iPhone y Android)
         function descargarFoto(cardId, idTarjeta) {
             const elemento = document.getElementById(cardId);
             html2canvas(elemento, { 
@@ -477,9 +391,9 @@
                             <meta charset="UTF-8">
                             <title>Guardar Tarjeta - ID ${idTarjeta}</title>
                             <style>
-                                body { background: #080808; color: #fff; font-family: sans-serif; text-align: center; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-                                img { width: 100%; max-width: 350px; border-radius: 8px; border: 2px solid #dfb15b; margin-bottom: 20px; }
-                                p { color: #dfb15b; font-size: 1rem; line-height: 1.5; max-width: 320px; }
+                                body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+                                img { width: 100%; max-width: 350px; border-radius: 12px; margin-bottom: 20px; }
+                                p { color: #dcb36c; font-size: 1rem; line-height: 1.5; max-width: 320px; }
                             </style>
                         </head>
                         <body>
@@ -497,7 +411,7 @@
             });
         }
 
-        // 4. Imprimir / Guardar PDF profesional a 8.5 x 5 cm
+        // 4. Imprimir / Guardar PDF a 8.5 x 5 cm
         function descargarPDF(cardId, nombre) {
             const elemento = document.getElementById(cardId).outerHTML;
             const ventanaPrint = window.open('', '_blank', 'width=900,height=700');
@@ -512,43 +426,23 @@
                         .physical-card {
                             width: 85mm;
                             height: 50mm;
-                            background: radial-gradient(circle at 70% 20%, #1a1a1a 0%, #080808 70%, #020202 100%) !important;
-                            border: 1.5px solid #dfb15b;
-                            border-radius: 10px;
-                            padding: 30px;
+                            background-color: #121214 !important;
+                            background-image: radial-gradient(#1c1c20 1px, transparent 1px), radial-gradient(#0a0a0c 1px, #121214 1px) !important;
+                            background-size: 4px 4px !important;
+                            background-position: 0 0, 2px 2px !important;
+                            border-radius: 12px;
                             display: flex;
                             flex-direction: column;
-                            justify-content: space-between;
+                            justify-content: center;
+                            align-items: center;
+                            gap: 16px;
                             position: relative;
                             -webkit-print-color-adjust: exact;
                             print-color-adjust: exact;
                         }
-                        .card-top { display: flex; justify-content: space-between; align-items: center; }
-                        .brand-logo { color: #dfb15b; font-size: 1.4rem; font-weight: 300; letter-spacing: 3px; font-family: sans-serif; text-transform: lowercase; }
-                        .card-middle { display: flex; align-items: center; justify-content: space-between; }
-                        .chip-container { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
-                        .emv-chip {
-                            width: 50px;
-                            height: 38px;
-                            background: linear-gradient(135deg, #fef2cc 0%, #dfb15b 45%, #996515 100%);
-                            border-radius: 5px;
-                            position: relative;
-                            border: 0.5px solid #b8860b;
-                        }
-                        .emv-chip::before {
-                            content: "";
-                            position: absolute;
-                            inset: 0;
-                            background-image: 
-                                linear-gradient(90deg, transparent 33%, rgba(0,0,0,0.3) 33%, rgba(0,0,0,0.3) 36%, transparent 36%),
-                                linear-gradient(90deg, transparent 66%, rgba(0,0,0,0.3) 66%, rgba(0,0,0,0.3) 69%, transparent 69%),
-                                linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.3) 48%, rgba(0,0,0,0.3) 52%, transparent 52%);
-                        }
-                        .contactless-icon { color: #dfb15b; font-size: 1.2rem; letter-spacing: -2px; transform: rotate(90deg); }
-                        .qr-frame { background: #ffffff; padding: 5px; border-radius: 4px; display: inline-block; width: 84px; height: 84px; display: flex; align-items: center; justify-content: center; }
-                        .qr-frame img { display: block; width: 74px !important; height: 74px !important; }
-                        .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-                        .card-title-main { color: #ffffff; font-size: 1.15rem; font-weight: 500; letter-spacing: 3px; font-family: sans-serif; text-transform: uppercase; }
+                        .brand-logo-centered { color: #dcb36c; font-size: 2.1rem; font-weight: 400; font-family: sans-serif; letter-spacing: 0.5px; }
+                        .qr-frame-minimal { background: transparent; display: flex; align-items: center; justify-content: center; }
+                        .qr-frame-minimal img, .qr-frame-minimal canvas { display: block; width: 78px !important; height: 78px !important; }
                     </style>
                 </head>
                 <body>
