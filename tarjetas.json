@@ -1,1 +1,14 @@
-
+[
+  {
+    "id": "0001",
+    "nombre": "Carrito de Panchos",
+    "link": "https://www.instagram.com/ejemplo/",
+    "estado": "activa"
+  },
+  {
+    "id": "0002",
+    "nombre": "Lavadero Premium",
+    "link": "https://wa.me/5492640000000",
+    "estado": "activa"
+  }
+]
