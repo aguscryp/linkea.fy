@@ -11,7 +11,7 @@
         :root {
             --bg-color: #050507;
             --gold-primary: #dfb15b;
-            --gold-glow: rgba(223, 177, 91, 0.3);
+            --gold-glow: rgba(223, 177, 91, 0.4);
             --text-main: #ffffff;
             --text-muted: #88888c;
         }
@@ -37,23 +37,24 @@
             position: relative;
         }
 
+        /* Aura de luz animada más envolvente */
         .bg-glow {
             position: absolute;
-            width: 400px;
-            height: 400px;
+            width: 450px;
+            height: 450px;
             background: radial-gradient(circle, var(--gold-glow) 0%, rgba(0,0,0,0) 70%);
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 0;
-            filter: blur(50px);
+            filter: blur(60px);
             pointer-events: none;
-            animation: pulseGlow 4s infinite ease-in-out;
+            animation: pulseGlow 5s infinite ease-in-out;
         }
 
         @keyframes pulseGlow {
-            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.15); }
         }
 
         .container {
@@ -61,13 +62,13 @@
             z-index: 1;
             max-width: 420px;
             width: 100%;
-            background: rgba(14, 14, 17, 0.85);
-            border: 1px solid rgba(223, 177, 91, 0.25);
-            border-radius: 20px;
-            padding: 30px 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.9), 0 0 25px rgba(223, 177, 91, 0.1);
-            backdrop-filter: blur(12px);
-            animation: fadeInUp 0.8s ease-out;
+            background: rgba(14, 14, 17, 0.88);
+            border: 1px solid rgba(223, 177, 91, 0.3);
+            border-radius: 24px;
+            padding: 35px 22px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.95), 0 0 30px rgba(223, 177, 91, 0.15);
+            backdrop-filter: blur(15px);
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -75,37 +76,40 @@
 
         .brand-logo {
             color: var(--gold-primary);
-            font-size: 2.2rem;
+            font-size: 2.3rem;
             font-weight: 400;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(223, 177, 91, 0.4);
+            animation: fadeInDown 0.9s ease-out;
         }
 
         .card-id-badge {
             display: inline-block;
-            background: rgba(223, 177, 91, 0.1);
+            background: rgba(223, 177, 91, 0.12);
             color: var(--gold-primary);
-            border: 1px solid rgba(223, 177, 91, 0.3);
-            padding: 4px 12px;
+            border: 1px solid rgba(223, 177, 91, 0.35);
+            padding: 5px 14px;
             border-radius: 20px;
             font-size: 0.7rem;
-            letter-spacing: 2px;
+            letter-spacing: 2.5px;
             text-transform: uppercase;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             font-weight: 600;
+            box-shadow: 0 0 10px rgba(223, 177, 91, 0.1);
         }
 
         /* ==========================================
-           CONTENEDOR 3D FLIP & TILT
+           CONTENEDOR 3D FLIP & TILT ÉPICO
            ========================================== */
         .card-tilt-container {
             width: 100%;
             display: flex;
             justify-content: center;
-            margin-bottom: 20px;
-            perspective: 1000px;
+            margin-bottom: 22px;
+            perspective: 1200px;
             cursor: pointer;
-            touch-action: none; /* Evita que el celular mueva la página al tocar la tarjeta */
+            touch-action: none;
         }
 
         .card-3d-scene {
@@ -113,10 +117,15 @@
             height: 200px;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
+            /* Transición fluida para el seguimiento del mouse */
+            transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Caras de la tarjeta */
+        /* CLASE CLAVE PARA EL GIRO LENTO Y CINEMATOGRÁFICO */
+        .card-3d-scene.animating-flip {
+            transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
         .card-face {
             position: absolute;
             width: 100%;
@@ -124,39 +133,37 @@
             top: 0; left: 0;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            border-radius: 12px;
+            border-radius: 14px;
             background: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9), inset 0 1px 1px rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(223, 177, 91, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(223, 177, 91, 0.35);
             padding: 20px;
         }
 
-        /* Dorso de la tarjeta */
         .card-back {
             transform: rotateY(180deg);
             text-align: center;
         }
 
-        /* Estilo del QR integrado en el frente (blanco profesional) */
         .qr-frame-minimal {
             background: #ffffff;
             padding: 5px;
-            border-radius: 5px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
         }
 
         .qr-frame-minimal img, .qr-frame-minimal canvas {
             display: block;
-            width: 68px !important;
-            height: 68px !important;
+            width: 66px !important;
+            height: 66px !important;
         }
 
         .card-inner-logo {
@@ -166,41 +173,42 @@
             letter-spacing: 0.5px;
         }
 
-        /* Efecto de brillo holográfico */
         .card-shine {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 12px;
-            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.12) 0%, transparent 70%);
+            border-radius: 14px;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.15) 0%, transparent 70%);
             pointer-events: none;
             mix-blend-mode: overlay;
         }
 
-        /* Botón flotante para dar vuelta la tarjeta */
+        /* Botón de giro elegante */
         .btn-flip {
-            background: rgba(223, 177, 91, 0.1);
+            background: rgba(223, 177, 91, 0.08);
             color: var(--gold-primary);
             border: 1px solid rgba(223, 177, 91, 0.3);
-            padding: 6px 16px;
+            padding: 8px 18px;
             border-radius: 20px;
             font-size: 0.72rem;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             cursor: pointer;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
+            margin-bottom: 22px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .btn-flip:hover {
             background: var(--gold-primary);
             color: #000;
+            box-shadow: 0 0 15px rgba(223, 177, 91, 0.4);
+            transform: translateY(-2px);
         }
 
         h1 {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 500;
             letter-spacing: 1px;
             margin-bottom: 8px;
@@ -210,8 +218,8 @@
         p {
             color: var(--text-muted);
             font-size: 0.82rem;
-            line-height: 1.5;
-            margin-bottom: 20px;
+            line-height: 1.6;
+            margin-bottom: 25px;
         }
 
         .btn-claim {
@@ -223,23 +231,28 @@
             background: linear-gradient(135deg, #dfb15b 0%, #b88d3e 100%);
             color: #000000;
             text-decoration: none;
-            padding: 14px;
-            border-radius: 8px;
+            padding: 15px;
+            border-radius: 10px;
             font-weight: 700;
             font-size: 0.8rem;
             letter-spacing: 2px;
             text-transform: uppercase;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(223, 177, 91, 0.25);
+            box-shadow: 0 10px 25px rgba(223, 177, 91, 0.3);
         }
 
         .btn-claim:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 25px rgba(223, 177, 91, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(223, 177, 91, 0.5);
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-15px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
@@ -252,10 +265,10 @@
         <div class="brand-logo">linkea.fy</div>
         <div class="card-id-badge" id="badgeId">Tarjeta en Stock</div>
 
-        <!-- Tarjeta Interactiva 3D con Frente (Logo + QR) y Dorso -->
+        <!-- Tarjeta Interactiva 3D -->
         <div class="card-tilt-container" id="tiltContainer">
             <div class="card-3d-scene" id="cardScene">
-                <!-- CARA FRONTAL (Logo + QR Profesional) -->
+                <!-- CARA FRONTAL (Logo + QR Real) -->
                 <div class="card-face card-front">
                     <div class="card-shine"></div>
                     <div class="card-inner-logo">linkea.fy</div>
@@ -264,19 +277,19 @@
                 <!-- CARA TRASERA (DORSO) -->
                 <div class="card-face card-back">
                     <div class="card-shine"></div>
-                    <div style="font-size: 0.85rem; color: var(--gold-primary); letter-spacing: 2px; margin-bottom: 8px;">BLACK GOLD</div>
-                    <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.4;">Tecnología NFC & QR Integrada<br>Espacio Exclusivo Disponible</div>
+                    <div style="font-size: 0.9rem; color: var(--gold-primary); letter-spacing: 3px; font-weight: 600; margin-bottom: 8px;">BLACK GOLD</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;">Tecnología NFC & QR Integrada<br>Espacio Exclusivo Disponible</div>
                 </div>
             </div>
         </div>
 
-        <!-- Botón para voltear la tarjeta -->
+        <!-- Botón para voltear la tarjeta con animación épica -->
         <button class="btn-flip" id="flipBtn">
-            <i class="fa-solid fa-rotate"></i> Ver Dorso / Frente
+            <i class="fa-solid fa-rotate"></i> Girar Tarjeta
         </button>
 
         <h1>Tu marca merece este nivel</h1>
-        <p>Esta tarjeta física se encuentra lista en stock. Interactúa con ella en 3D y gírala para ver su diseño por ambos lados.</p>
+        <p>Explora el acabado metálico de alta gama interactuando con la tarjeta en 3D. Gírala para descubrir su diseño integral.</p>
 
         <!-- Botón de WhatsApp con ID dinámico -->
         <a id="whatsappBtn" href="#" target="_blank" class="btn-claim">
@@ -296,12 +309,12 @@
 
         document.getElementById('badgeId').innerText = `Tarjeta #${currentId}`;
 
-        // Generar el QR automáticamente apuntando a la propia tarjeta
+        // Generar el código QR apuntando a la propia página
         const currentUrl = window.location.href;
         new QRCode(document.getElementById("qrContainer"), {
             text: currentUrl,
-            width: 68,
-            height: 68,
+            width: 66,
+            height: 66,
             colorDark: "#000000",
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
@@ -312,7 +325,7 @@
         document.getElementById('whatsappBtn').href = `https://wa.me/TU_NUMERO_DE_WHATSAPP?text=${mensajeWa}`;
 
         // ==========================================
-        // CONTROL 3D TILT & FLIP (COMPATIBLE CELULARES)
+        // CONTROL 3D TILT & GIRO ÉPICO LENTO
         // ==========================================
         const container = document.getElementById('tiltContainer');
         const scene = document.getElementById('cardScene');
@@ -327,12 +340,22 @@
             scene.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY + flipAngle}deg)`;
         }
 
+        // Activamos la clase de animación lenta y cinemática al presionar el botón de giro
         flipBtn.addEventListener('click', () => {
             isFlipped = !isFlipped;
+            scene.classList.add('animating-flip');
             updateTransform();
+
+            // Quitamos la clase temporal para que el movimiento con el mouse vuelva a ser inmediato al terminar el giro
+            setTimeout(() => {
+                scene.classList.remove('animating-flip');
+            }, 850);
         });
 
         function handleMove(clientX, clientY) {
+            // Si está girando de manera épica, evitamos interferir con el mouse
+            if (scene.classList.contains('animating-flip')) return;
+
             const rect = container.getBoundingClientRect();
             const x = clientX - rect.left;
             const y = clientY - rect.top;
@@ -340,8 +363,8 @@
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
 
-            currentRotateX = -((y - centerY) / centerY) * 12;
-            currentRotateY = ((x - centerX) / centerX) * 12;
+            currentRotateX = -((y - centerY) / centerY) * 10;
+            currentRotateY = ((x - centerX) / centerX) * 10;
 
             updateTransform();
         }
@@ -351,13 +374,14 @@
         });
 
         container.addEventListener('mouseleave', () => {
+            if (scene.classList.contains('animating-flip')) return;
             currentRotateX = 0;
             currentRotateY = 0;
             updateTransform();
         });
 
         container.addEventListener('touchmove', (e) => {
-            e.preventDefault(); // Evita que se mueva la página web al tocar la tarjeta
+            e.preventDefault(); 
             if (e.touches.length > 0) {
                 const touch = e.touches[0];
                 handleMove(touch.clientX, touch.clientY);
@@ -365,6 +389,7 @@
         }, { passive: false });
 
         container.addEventListener('touchend', () => {
+            if (scene.classList.contains('animating-flip')) return;
             currentRotateX = 0;
             currentRotateY = 0;
             updateTransform();
