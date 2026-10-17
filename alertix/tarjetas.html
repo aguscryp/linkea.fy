@@ -196,9 +196,131 @@
             box-shadow: 0 0 15px var(--alert-glow);
         }
 
+        /* ==========================================
+           VENTANA EMERGENTE (MODAL ZOOM ESTILO BLACK GOLD)
+           ========================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: #0d0d10;
+            border: 1px solid var(--border-red);
+            border-radius: 20px;
+            padding: 35px 30px;
+            width: 90%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(255, 30, 56, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px; right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--alert-red);
+        }
+
+        .modal-title {
+            color: var(--alert-red);
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        /* Tarjeta grande dentro del modal */
+        .modal-card-zoomed {
+            width: 100%;
+            height: 250px;
+            background: var(--card-metal);
+            border: 1px solid var(--border-red);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.95), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-card-zoomed::before {
+            content: '';
+            position: absolute;
+            top: -60%; left: -60%; width: 220%; height: 220%;
+            background: linear-gradient(
+                115deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.02) 40%,
+                rgba(255, 30, 56, 0.3) 50%,
+                rgba(255, 255, 255, 0.02) 60%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(25deg);
+            pointer-events: none;
+        }
+
+        .modal-brand {
+            color: var(--alert-red);
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px var(--alert-glow);
+            z-index: 2;
+        }
+
+        .modal-qr-box {
+            background: #ffffff;
+            padding: 8px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+            z-index: 2;
+        }
+
+        .modal-qr-box img, .modal-qr-box canvas {
+            display: block;
+            width: 110px !important;
+            height: 110px !important;
+        }
+
         @media print {
             body { background: #fff; padding: 0; }
-            .header, .btn-row, .btn-panel { display: none !important; }
+            .header, .btn-row, .btn-panel, .modal-overlay { display: none !important; }
             .cards-grid { display: block; }
             .panel-card-box { break-inside: avoid; page-break-inside: avoid; border: none; box-shadow: none; margin-bottom: 20px; }
             .alertix-card-preview { border: 1px solid #000; box-shadow: none; }
@@ -213,7 +335,19 @@
     </div>
 
     <div class="cards-grid" id="cardsGrid">
-        <!-- Se generan dinámicamente según tarjetas.json -->
+        <!-- Se generan dinámicamente -->
+    </div>
+
+    <!-- VENTANA MODAL ZOOM -->
+    <div class="modal-overlay" id="cardModal" onclick="cerrarModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="cerrarModalDirecto()">&times;</button>
+            <div class="modal-title" id="modalTitleId">Tarjeta ID: A-0001</div>
+            <div class="modal-card-zoomed" id="modalCardPreview">
+                <div class="modal-brand">ALERTIX</div>
+                <div class="modal-qr-box" id="modalQrContainer"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -227,8 +361,15 @@
                 grid.innerHTML = '';
 
                 tarjetas.forEach((t, index) => {
-                    // Ruta exacta considerando tu repositorio GitHub (linkea.fy)
                     const urlTarjeta = `${window.location.origin}/linkea.fy/alertix/tt/${t.id}/index.html`;
+                    
+                    // Verificamos si la tarjeta está 100% activa (tiene WhatsApp de empresa asignado)
+                    const estaActivaTotal = t.estado === 'activa' && t.whatsappEmpresa && t.whatsappEmpresa.trim() !== "";
+                    
+                    // Si está 100% activa abre el modal zoom; si no, lleva a stock/activación
+                    const accionVer = estaActivaTotal 
+                        ? `abrirModalZoom('${t.id}', '${urlTarjeta}')` 
+                        : `window.open('alertix-stock.html?id=${t.id}', '_blank')`;
 
                     const cardHTML = `
                         <div class="panel-card-box">
@@ -237,7 +378,7 @@
                                 <span class="badge-status ${t.estado}">${t.estado}</span>
                             </div>
 
-                            <!-- VISTA PREVIA DE LA TARJETA ALERTIX -->
+                            <!-- VISTA PREVIA DE LA TARJETA -->
                             <div class="alertix-card-preview" id="card-preview-${index}">
                                 <div class="card-brand-text">ALERTIX</div>
                                 <div class="qr-wrapper" id="qr-box-${index}"></div>
@@ -245,7 +386,7 @@
 
                             <!-- BOTONES DE ACCIÓN -->
                             <div class="btn-row">
-                                <a href="tt/${t.id}/index.html" target="_blank" class="btn-panel">VER TARJETA</a>
+                                <button onclick="${accionVer}" class="btn-panel">VER TARJETA</button>
                                 <button onclick="descargarQR('qr-box-${index}', '${t.id}')" class="btn-panel">DESCARGAR QR</button>
                             </div>
 
@@ -255,7 +396,7 @@
                     `;
                     grid.innerHTML += cardHTML;
 
-                    // Generar código QR apuntando correctamente al repositorio
+                    // Generar QR en la tarjeta del panel
                     setTimeout(() => {
                         new QRCode(document.getElementById(`qr-box-${index}`), {
                             text: urlTarjeta,
@@ -274,18 +415,40 @@
             }
         }
 
-        // Descargar sólo el código QR
+        // FUNCIONES DEL MODAL ZOOM
+        function abrirModalZoom(id, url) {
+            document.getElementById('modalTitleId').innerText = `Tarjeta ID: ${id}`;
+            const qrContainer = document.getElementById('modalQrContainer');
+            qrContainer.innerHTML = ''; // Limpiar QR anterior
+
+            new QRCode(qrContainer, {
+                text: url,
+                width: 110,
+                height: 110,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            document.getElementById('cardModal').classList.add('active');
+        }
+
+        function cerrarModalDirecto() {
+            document.getElementById('cardModal').classList.remove('active');
+        }
+
+        function cerrarModal(event) {
+            if (event.target.id === 'cardModal') {
+                cerrarModalDirecto();
+            }
+        }
+
+        // Descargar QR individual
         function descargarQR(containerId, id) {
             const container = document.getElementById(containerId);
             const img = container.querySelector('img');
             const canvas = container.querySelector('canvas');
-
-            let imageSrc = "";
-            if (img && img.src) {
-                imageSrc = img.src;
-            } else if (canvas) {
-                imageSrc = canvas.toDataURL("image/png");
-            }
+            let imageSrc = img && img.src ? img.src : (canvas ? canvas.toDataURL("image/png") : "");
 
             if (imageSrc) {
                 const link = document.createElement('a');
@@ -297,10 +460,9 @@
             }
         }
 
-        // Descargar la tarjeta completa como PNG
+        // Descargar tarjeta completa a fotos
         function descargarTarjetaImg(cardId, id) {
             const cardElement = document.getElementById(cardId);
-            
             html2canvas(cardElement, {
                 scale: 3,
                 backgroundColor: null,
