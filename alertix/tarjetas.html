@@ -33,7 +33,6 @@
             min-height: 100vh;
         }
 
-        /* HEADER DEL PANEL */
         .header {
             text-align: center;
             margin-bottom: 40px;
@@ -55,7 +54,6 @@
             text-transform: uppercase;
         }
 
-        /* GRID DE TARJETAS (Idéntico a la imagen) */
         .cards-grid {
             max-width: 1200px;
             margin: 0 auto;
@@ -64,7 +62,6 @@
             gap: 30px;
         }
 
-        /* CONTENEDOR DE CADA TARJETA EN EL PANEL */
         .panel-card-box {
             background: #0f0f12;
             border: 1px solid rgba(255, 30, 56, 0.2);
@@ -112,7 +109,6 @@
             border-color: rgba(255, 171, 0, 0.3);
         }
 
-        /* TARJETA FÍSICA ALERTIX (Fondo metalizado pulido + detalles rojos) */
         .alertix-card-preview {
             width: 100%;
             height: 200px;
@@ -130,7 +126,6 @@
             margin: 5px 0;
         }
 
-        /* Destello rojo elegante sobre el metal */
         .alertix-card-preview::before {
             content: '';
             position: absolute;
@@ -173,7 +168,6 @@
             height: 75px !important;
         }
 
-        /* BOTONES DE ACCIÓN (Misma distribución que en la imagen) */
         .btn-row {
             display: flex;
             gap: 10px;
@@ -226,6 +220,7 @@
         async function cargarPanelAlertix() {
             const grid = document.getElementById('cardsGrid');
             try {
+                // Lee el tarjetas.json ubicado dentro de la misma carpeta alertix
                 const response = await fetch('tarjetas.json?_=' + new Date().getTime());
                 if (!response.ok) throw new Error("No se pudo cargar el archivo tarjetas.json");
 
@@ -233,7 +228,7 @@
                 grid.innerHTML = '';
 
                 tarjetas.forEach((t, index) => {
-                    // Enlace absoluto/relativo al que apunta la tarjeta física
+                    // Ruta relativa exacta hacia la carpeta tt/ID/ de esta tarjeta
                     const urlTarjeta = `${window.location.origin}/alertix/tt/${t.id}/index.html`;
 
                     const cardHTML = `
@@ -243,28 +238,25 @@
                                 <span class="badge-status ${t.estado}">${t.estado}</span>
                             </div>
 
-                            <!-- VISTA PREVIA DE LA TARJETA (Rojo/Negro Metalizado) -->
+                            <!-- VISTA PREVIA DE LA TARJETA ALERTIX -->
                             <div class="alertix-card-preview" id="card-preview-${index}">
                                 <div class="card-brand-text">ALERTIX</div>
                                 <div class="qr-wrapper" id="qr-box-${index}"></div>
                             </div>
 
-                            <!-- FILA 1 DE BOTONES -->
+                            <!-- BOTONES DE ACCIÓN -->
                             <div class="btn-row">
                                 <a href="tt/${t.id}/index.html" target="_blank" class="btn-panel">VER TARJETA</a>
                                 <button onclick="descargarQR('qr-box-${index}', '${t.id}')" class="btn-panel">DESCARGAR QR</button>
                             </div>
 
-                            <!-- FILA 2 DE BOTONES -->
                             <button onclick="descargarTarjetaImg('card-preview-${index}', '${t.id}')" class="btn-panel">DESCARGAR TARJETA A FOTOS</button>
-
-                            <!-- FILA 3 DE BOTONES -->
                             <button onclick="window.print()" class="btn-panel">IMPRIMIR / GUARDAR PDF</button>
                         </div>
                     `;
                     grid.innerHTML += cardHTML;
 
-                    // Generar código QR escaneable
+                    // Generar código QR escaneable apuntando a su redirección de ID
                     setTimeout(() => {
                         new QRCode(document.getElementById(`qr-box-${index}`), {
                             text: urlTarjeta,
@@ -283,7 +275,7 @@
             }
         }
 
-        // FUNCIÓN 1: DESCARGAR SÓLO EL CÓDIGO QR
+        // Descargar sólo el código QR como PNG
         function descargarQR(containerId, id) {
             const container = document.getElementById(containerId);
             const img = container.querySelector('img');
@@ -306,12 +298,12 @@
             }
         }
 
-        // FUNCIÓN 2: DESCARGAR LA TARJETA COMPLETA COMO IMAGEN PNG
+        // Descargar la tarjeta completa como imagen PNG
         function descargarTarjetaImg(cardId, id) {
             const cardElement = document.getElementById(cardId);
             
             html2canvas(cardElement, {
-                scale: 3, // Alta calidad de resolución
+                scale: 3,
                 backgroundColor: null,
                 useCORS: true
             }).then(canvas => {
