@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración | Alertix - linkea.fy</title>
-    <!-- Librerías para QR y captura de imagen -->
+    <!-- Librerías para QR y captura de imagen en alta resolución -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --bg-dark: #050507;
             --panel-bg: #0b0b0d;
-            --card-metal: linear-gradient(135deg, #18181c 0%, #0d0d0f 35%, #1a1a1e 70%, #050507 100%);
+            /* Fondo negro metalizado puro idéntico a Black Gold */
+            --card-metal: #121215;
             --alert-red: #ff1e38;
             --alert-glow: rgba(255, 30, 56, 0.4);
             --border-red: rgba(255, 30, 56, 0.35);
@@ -109,6 +110,7 @@
             border-color: rgba(255, 171, 0, 0.3);
         }
 
+        /* TARJETA FÍSICA ALERTIX (Negro metalizado puro) */
         .alertix-card-preview {
             width: 100%;
             height: 200px;
@@ -120,26 +122,10 @@
             justify-content: center;
             align-items: center;
             gap: 14px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.95), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.95), inset 0 1px 3px rgba(255, 255, 255, 0.08);
             position: relative;
             overflow: hidden;
             margin: 5px 0;
-        }
-
-        .alertix-card-preview::before {
-            content: '';
-            position: absolute;
-            top: -60%; left: -60%; width: 220%; height: 220%;
-            background: linear-gradient(
-                115deg,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.02) 40%,
-                rgba(255, 30, 56, 0.25) 50%,
-                rgba(255, 255, 255, 0.02) 60%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            transform: rotate(25deg);
-            pointer-events: none;
         }
 
         .card-brand-text {
@@ -197,7 +183,7 @@
         }
 
         /* ==========================================
-           VENTANA EMERGENTE (MODAL ZOOM ESTILO BLACK GOLD)
+           VENTANA MODAL ZOOM (ESTILO BLACK GOLD)
            ========================================== */
         .modal-overlay {
             position: fixed;
@@ -262,7 +248,6 @@
             text-align: center;
         }
 
-        /* Tarjeta grande dentro del modal */
         .modal-card-zoomed {
             width: 100%;
             height: 250px;
@@ -274,25 +259,9 @@
             justify-content: center;
             align-items: center;
             gap: 18px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.95), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.95), inset 0 1px 3px rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
-        }
-
-        .modal-card-zoomed::before {
-            content: '';
-            position: absolute;
-            top: -60%; left: -60%; width: 220%; height: 220%;
-            background: linear-gradient(
-                115deg,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.02) 40%,
-                rgba(255, 30, 56, 0.3) 50%,
-                rgba(255, 255, 255, 0.02) 60%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            transform: rotate(25deg);
-            pointer-events: none;
         }
 
         .modal-brand {
@@ -318,12 +287,32 @@
             height: 110px !important;
         }
 
+        /* ==========================================
+           CONFIGURACIÓN DE IMPRESIÓN EXCLUSIVA
+           ========================================== */
         @media print {
-            body { background: #fff; padding: 0; }
-            .header, .btn-row, .btn-panel, .modal-overlay { display: none !important; }
-            .cards-grid { display: block; }
-            .panel-card-box { break-inside: avoid; page-break-inside: avoid; border: none; box-shadow: none; margin-bottom: 20px; }
-            .alertix-card-preview { border: 1px solid #000; box-shadow: none; }
+            body * {
+                visibility: hidden;
+            }
+            body {
+                background: #ffffff !important;
+            }
+            /* Solo muestra la tarjeta seleccionada para imprimir perfectamente centrada */
+            #printContainer, #printContainer * {
+                visibility: visible;
+            }
+            #printContainer {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 8.5cm;
+                height: 5cm;
+                border: 1px solid #333 !important;
+                background: #121215 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
     </style>
 </head>
@@ -337,6 +326,9 @@
     <div class="cards-grid" id="cardsGrid">
         <!-- Se generan dinámicamente -->
     </div>
+
+    <!-- CONTENEDOR OCULTO PARA IMPRESIÓN LIMPIA DE UNA SOLA TARJETA -->
+    <div id="printContainer" style="display:none;"></div>
 
     <!-- VENTANA MODAL ZOOM -->
     <div class="modal-overlay" id="cardModal" onclick="cerrarModal(event)">
@@ -362,14 +354,6 @@
 
                 tarjetas.forEach((t, index) => {
                     const urlTarjeta = `${window.location.origin}/linkea.fy/alertix/tt/${t.id}/index.html`;
-                    
-                    // Verificamos si la tarjeta está 100% activa (tiene WhatsApp de empresa asignado)
-                    const estaActivaTotal = t.estado === 'activa' && t.whatsappEmpresa && t.whatsappEmpresa.trim() !== "";
-                    
-                    // Si está 100% activa abre el modal zoom; si no, lleva a stock/activación
-                    const accionVer = estaActivaTotal 
-                        ? `abrirModalZoom('${t.id}', '${urlTarjeta}')` 
-                        : `window.open('alertix-stock.html?id=${t.id}', '_blank')`;
 
                     const cardHTML = `
                         <div class="panel-card-box">
@@ -386,12 +370,12 @@
 
                             <!-- BOTONES DE ACCIÓN -->
                             <div class="btn-row">
-                                <button onclick="${accionVer}" class="btn-panel">VER TARJETA</button>
+                                <button onclick="abrirModalZoom('${t.id}', '${urlTarjeta}')" class="btn-panel">VER TARJETA</button>
                                 <button onclick="descargarQR('qr-box-${index}', '${t.id}')" class="btn-panel">DESCARGAR QR</button>
                             </div>
 
                             <button onclick="descargarTarjetaImg('card-preview-${index}', '${t.id}')" class="btn-panel">DESCARGAR TARJETA A FOTOS</button>
-                            <button onclick="window.print()" class="btn-panel">IMPRIMIR / GUARDAR PDF</button>
+                            <button onclick="imprimirTarjetaIndividual('${t.id}', '${urlTarjeta}')" class="btn-panel">IMPRIMIR / GUARDAR PDF</button>
                         </div>
                     `;
                     grid.innerHTML += cardHTML;
@@ -419,7 +403,7 @@
         function abrirModalZoom(id, url) {
             document.getElementById('modalTitleId').innerText = `Tarjeta ID: ${id}`;
             const qrContainer = document.getElementById('modalQrContainer');
-            qrContainer.innerHTML = ''; // Limpiar QR anterior
+            qrContainer.innerHTML = '';
 
             new QRCode(qrContainer, {
                 text: url,
@@ -443,7 +427,7 @@
             }
         }
 
-        // Descargar QR individual
+        // Descargar QR individual en alta calidad
         function descargarQR(containerId, id) {
             const container = document.getElementById(containerId);
             const img = container.querySelector('img');
@@ -460,19 +444,45 @@
             }
         }
 
-        // Descargar tarjeta completa a fotos
+        // Descargar tarjeta completa en ultra alta resolución (evita bordes pixelados)
         function descargarTarjetaImg(cardId, id) {
             const cardElement = document.getElementById(cardId);
             html2canvas(cardElement, {
-                scale: 3,
-                backgroundColor: null,
+                scale: 4, // Escala cuádruple para máxima nitidez y cero bordes feos
+                backgroundColor: "#121215",
                 useCORS: true
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `Tarjeta_Alertix_${id}.png`;
-                link.href = canvas.toDataURL("image/png");
+                link.href = canvas.toDataURL("image/png", 1.0);
                 link.click();
             });
+        }
+
+        // Imprimir únicamente la tarjeta seleccionada de forma limpia
+        function imprimirTarjetaIndividual(id, url) {
+            const printBox = document.getElementById('printContainer');
+            printBox.style.display = 'block';
+            printBox.innerHTML = `
+                <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; background: #121215;">
+                    <div style="color: #ff1e38; font-size: 1.6rem; font-weight: 700; letter-spacing: 3px;">ALERTIX</div>
+                    <div id="printQr-${id}" style="background: #fff; padding: 4px; border-radius: 6px;"></div>
+                </div>
+            `;
+
+            new QRCode(document.getElementById(`printQr-${id}`), {
+                text: url,
+                width: 70,
+                height: 70,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            setTimeout(() => {
+                window.print();
+                printBox.style.display = 'none';
+            }, 300);
         }
 
         cargarPanelAlertix();
