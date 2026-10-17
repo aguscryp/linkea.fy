@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control | linkea.fy Alertix</title>
-    <!-- Librería para generar los códigos QR en el panel -->
+    <!-- Librería para generar los códigos QR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -12,10 +12,10 @@
             --bg-color: #08080a;
             --card-bg: #111115;
             --alert-red: #ff1e38;
-            --alert-glow: rgba(255, 30, 56, 0.3);
+            --alert-glow: rgba(255, 30, 56, 0.35);
             --text-main: #ffffff;
             --text-muted: #88888c;
-            --border-color: rgba(255, 30, 56, 0.25);
+            --border-color: rgba(255, 30, 56, 0.3);
         }
 
         * {
@@ -72,137 +72,155 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 30px;
         }
 
-        .card-item {
+        .card-wrapper {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 18px;
-            padding: 22px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
             display: flex;
             flex-direction: column;
+            align-items: center;
             gap: 15px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
         }
 
-        .card-item:hover {
-            transform: translateY(-4px);
+        .card-wrapper:hover {
+            transform: translateY(-5px);
             border-color: var(--alert-red);
         }
 
-        /* Miniatura de la tarjeta metálica Alertix */
-        .card-preview {
-            width: 100%;
-            height: 150px;
+        /* ==========================================
+           TARJETA FÍSICA REAL (Proporción 8.5 x 5 cm)
+           ========================================== */
+        .card-physical {
+            width: 340px;
+            height: 200px; /* Proporción exacta 8.5 x 5 cm */
             background: linear-gradient(135deg, #1a1214 0%, #0a0506 35%, #18080a 70%, #050507 100%);
-            border: 1px solid rgba(255, 30, 56, 0.45);
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
+            border: 1px solid rgba(255, 30, 56, 0.5);
+            border-radius: 14px;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 18px 22px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.9), inset 0 1px 2px rgba(255, 255, 255, 0.2);
         }
 
-        .card-preview::before {
+        /* Destello metálico fluido rojo y negro */
+        .card-physical::before {
             content: '';
             position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(115deg, transparent 0%, rgba(255, 30, 56, 0.15) 50%, transparent 100%);
+            top: -75%; left: -75%; width: 250%; height: 250%;
+            background: linear-gradient(
+                115deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.02) 38%,
+                rgba(255, 60, 90, 0.35) 50%,
+                rgba(255, 255, 255, 0.02) 62%,
+                rgba(255, 255, 255, 0) 100%
+            );
             transform: rotate(25deg);
             pointer-events: none;
+            mix-blend-mode: color-dodge;
         }
 
-        .preview-logo {
-            color: var(--alert-red);
-            font-size: 1.2rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(255, 30, 56, 0.4);
-        }
-
-        .preview-qr-box {
-            background: #ffffff;
-            padding: 4px;
-            border-radius: 6px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             z-index: 2;
         }
 
-        .preview-qr-box img, .preview-qr-box canvas {
-            display: block;
-            width: 50px !important;
-            height: 50px !important;
+        .card-brand {
+            color: var(--alert-red);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 0 0 12px rgba(255, 30, 56, 0.5);
         }
 
-        .card-item-header {
+        .card-id-tag {
+            background: rgba(255, 30, 56, 0.15);
+            color: var(--alert-red);
+            border: 1px solid rgba(255, 30, 56, 0.4);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+        }
+
+        .card-bottom {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-end;
+            z-index: 2;
         }
 
-        .card-id {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--alert-red);
-            letter-spacing: 1px;
-        }
-
-        .status-pill {
-            padding: 4px 10px;
-            border-radius: 20px;
+        .card-info-mini {
             font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
+            color: var(--text-muted);
+            line-height: 1.4;
         }
 
-        .status-pill.activa {
-            background: rgba(46, 213, 115, 0.15);
-            color: #2ed573;
-            border: 1px solid rgba(46, 213, 115, 0.3);
+        .card-info-mini strong {
+            color: #fff;
+            display: block;
         }
 
-        .status-pill.stock {
-            background: rgba(255, 171, 0, 0.15);
-            color: #ffab00;
-            border: 1px solid rgba(255, 171, 0, 0.3);
+        .qr-container-box {
+            background: #ffffff;
+            padding: 4px;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
         }
 
-        .info-grid {
+        .qr-container-box img, .qr-container-box canvas {
+            display: block;
+            width: 55px !important;
+            height: 55px !important;
+        }
+
+        /* ==========================================
+           CONTROLES Y DATOS ADMINISTRATIVOS
+           ========================================== */
+        .card-meta-info {
+            width: 100%;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
             background: rgba(255, 255, 255, 0.02);
-            padding: 10px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .info-field {
-            font-size: 0.8rem;
             text-align: left;
         }
 
-        .info-field span {
+        .meta-field {
+            font-size: 0.78rem;
+        }
+
+        .meta-field span {
             color: var(--text-muted);
             display: block;
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .info-field strong {
+        .meta-field strong {
             color: var(--text-main);
             font-weight: 500;
         }
 
-        .card-actions {
+        .card-actions-bar {
+            width: 100%;
             display: flex;
             gap: 10px;
         }
@@ -230,6 +248,17 @@
             color: #fff;
             box-shadow: 0 0 12px var(--alert-glow);
         }
+
+        .status-badge-mini {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        .status-badge-mini.activa { background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid rgba(46, 213, 115, 0.3); }
+        .status-badge-mini.stock { background: rgba(255, 171, 0, 0.15); color: #ffab00; border: 1px solid rgba(255, 171, 0, 0.3); }
     </style>
 </head>
 <body>
@@ -237,7 +266,7 @@
     <div class="header">
         <div>
             <div class="brand-logo">ALERTIX</div>
-            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">Panel de Gestión y Visualización de Tarjetas</p>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">Gestión de Tarjetas de Emergencia (Tamaño Real: 8.5 x 5 cm)</p>
         </div>
         <div class="stats-container">
             <div class="stat-badge">Total: <strong id="totalCards">0</strong></div>
@@ -246,15 +275,15 @@
     </div>
 
     <div class="grid-cards" id="cardsGrid">
-        <!-- Las tarjetas con su diseño y QR se inyectarán aquí -->
+        <!-- Las tarjetas físicas se generarán aquí -->
     </div>
 
     <script>
-        async function cargarPanel() {
+        async function cargarPanelAlertix() {
             const grid = document.getElementById('cardsGrid');
             try {
                 const response = await fetch('tarjetas.json?_=' + new Date().getTime());
-                if (!response.ok) throw new Error("No se pudo cargar el archivo tarjetas.json");
+                if (!response.ok) throw new Error("No se pudo cargar tarjetas.json");
 
                 const tarjetas = await response.json();
 
@@ -264,62 +293,61 @@
                 grid.innerHTML = '';
 
                 tarjetas.forEach((t, index) => {
-                    // Construimos la URL única a la que apunta la tarjeta física
-                    const urlRedireccion = `${window.location.origin}/alertix/tt/${t.id}/index.html`;
+                    // URL exacta a la que apuntará el QR físico de la tarjeta
+                    const urlDestino = `${window.location.origin}/alertix/tt/${t.id}/index.html`;
 
-                    const cardHTML = `
-                        <div class="card-item">
-                            <!-- Miniatura visual de la tarjeta Alertix -->
-                            <div class="card-preview">
-                                <div>
-                                    <div class="preview-logo">ALERTIX</div>
-                                    <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">#${t.id}</div>
+                    const htmlCard = `
+                        <div class="card-wrapper">
+                            <!-- Diseño físico real de la tarjeta (Proporción 8.5 x 5 cm) -->
+                            <div class="card-physical">
+                                <div class="card-top">
+                                    <div class="card-brand">ALERTIX</div>
+                                    <div class="card-id-tag">#${t.id}</div>
                                 </div>
-                                <div class="preview-qr-box" id="qr-panel-${index}"></div>
+                                <div class="card-bottom">
+                                    <div class="card-info-mini">
+                                        <span>SISTEMA DE EMERGENCIA</span>
+                                        NFC & QR Integrado
+                                    </div>
+                                    <div class="qr-container-box" id="qr-card-${index}"></div>
+                                </div>
                             </div>
 
-                            <div class="card-item-header">
-                                <span class="card-id">Tarjeta #${t.id}</span>
-                                <span class="status-pill ${t.estado}">${t.estado}</span>
-                            </div>
-
-                            <div class="info-grid">
-                                <div class="info-field" style="grid-column: span 2;">
+                            <!-- Información administrativa y estado -->
+                            <div class="card-meta-info">
+                                <div class="meta-field">
+                                    <span>Estado:</span>
+                                    <span class="status-badge-mini ${t.estado}">${t.estado}</span>
+                                </div>
+                                <div class="meta-field">
                                     <span>Cliente:</span>
-                                    <strong>${t.cliente || 'Sin asignar (Stock)'}</strong>
+                                    <strong>${t.cliente || 'Disponible'}</strong>
                                 </div>
-                                <div class="info-field">
-                                    <span>DNI:</span>
-                                    <strong>${t.dni || 'N/A'}</strong>
-                                </div>
-                                <div class="info-field">
-                                    <span>WhatsApp:</span>
-                                    <strong>${t.whatsappCliente || 'N/A'}</strong>
-                                </div>
-                                <div class="info-field" style="grid-column: span 2;">
+                                <div class="meta-field" style="grid-column: span 2;">
                                     <span>Ubicación:</span>
-                                    <strong>${t.ubicacion || 'No configurada'}</strong>
+                                    <strong>${t.ubicacion || 'Sin configurar'}</strong>
                                 </div>
                             </div>
 
-                            <div class="card-actions">
+                            <!-- Botones de prueba y gestión -->
+                            <div class="card-actions-bar">
                                 <a href="tt/${t.id}/index.html" target="_blank" class="btn-action">
-                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Probar
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Probar Alerta
                                 </a>
                                 <a href="alertix-stock.html?id=${t.id}" target="_blank" class="btn-action">
-                                    <i class="fa-solid fa-eye"></i> Stock
+                                    <i class="fa-solid fa-eye"></i> Ver Stock
                                 </a>
                             </div>
                         </div>
                     `;
-                    grid.innerHTML += cardHTML;
+                    grid.innerHTML += htmlCard;
 
-                    // Generar el código QR miniatura para cada tarjeta dentro del panel
+                    // Renderizar el código QR correspondiente al tamaño de la tarjeta física
                     setTimeout(() => {
-                        new QRCode(document.getElementById(`qr-panel-${index}`), {
-                            text: urlRedireccion,
-                            width: 50,
-                            height: 50,
+                        new QRCode(document.getElementById(`qr-card-${index}`), {
+                            text: urlDestino,
+                            width: 55,
+                            height: 55,
                             colorDark: "#000000",
                             colorLight: "#ffffff",
                             correctLevel: QRCode.CorrectLevel.H
@@ -332,7 +360,7 @@
             }
         }
 
-        cargarPanel();
+        cargarPanelAlertix();
     </script>
 </body>
 </html>
