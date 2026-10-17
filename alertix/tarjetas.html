@@ -220,7 +220,6 @@
         async function cargarPanelAlertix() {
             const grid = document.getElementById('cardsGrid');
             try {
-                // Lee el tarjetas.json ubicado dentro de la misma carpeta alertix
                 const response = await fetch('tarjetas.json?_=' + new Date().getTime());
                 if (!response.ok) throw new Error("No se pudo cargar el archivo tarjetas.json");
 
@@ -228,8 +227,8 @@
                 grid.innerHTML = '';
 
                 tarjetas.forEach((t, index) => {
-                    // Ruta relativa exacta hacia la carpeta tt/ID/ de esta tarjeta
-                    const urlTarjeta = `${window.location.origin}/alertix/tt/${t.id}/index.html`;
+                    // Ruta exacta considerando tu repositorio GitHub (linkea.fy)
+                    const urlTarjeta = `${window.location.origin}/linkea.fy/alertix/tt/${t.id}/index.html`;
 
                     const cardHTML = `
                         <div class="panel-card-box">
@@ -256,7 +255,7 @@
                     `;
                     grid.innerHTML += cardHTML;
 
-                    // Generar código QR escaneable apuntando a su redirección de ID
+                    // Generar código QR apuntando correctamente al repositorio
                     setTimeout(() => {
                         new QRCode(document.getElementById(`qr-box-${index}`), {
                             text: urlTarjeta,
@@ -275,7 +274,7 @@
             }
         }
 
-        // Descargar sólo el código QR como PNG
+        // Descargar sólo el código QR
         function descargarQR(containerId, id) {
             const container = document.getElementById(containerId);
             const img = container.querySelector('img');
@@ -298,7 +297,7 @@
             }
         }
 
-        // Descargar la tarjeta completa como imagen PNG
+        // Descargar la tarjeta completa como PNG
         function descargarTarjetaImg(cardId, id) {
             const cardElement = document.getElementById(cardId);
             
