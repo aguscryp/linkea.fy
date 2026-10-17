@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio Disponible | Alertix linkea.fy</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #050507;
+            --alert-red: #ff1e38;
+            --alert-glow: rgba(255, 30, 56, 0.35);
+            --text-main: #ffffff;
+            --text-muted: #88888c;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: linear-gradient(135deg, #150507 0%, #050507 35%, #1f080b 70%, #050507 100%); color: var(--text-main); display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; text-align: center; }
+        .container { max-width: 420px; width: 100%; background: rgba(14, 14, 17, 0.9); border: 1px solid rgba(255, 30, 56, 0.35); border-radius: 24px; padding: 35px 22px; box-shadow: 0 30px 60px rgba(0,0,0,0.95), 0 0 35px rgba(255, 30, 56, 0.15); backdrop-filter: blur(15px); display: flex; flex-direction: column; align-items: center; }
+        .brand-logo { color: var(--alert-red); font-size: 2.3rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; text-shadow: 0 0 20px rgba(255, 30, 56, 0.5); }
+        .card-id-badge { display: inline-block; background: rgba(255, 30, 56, 0.12); color: var(--alert-red); border: 1px solid rgba(255, 30, 56, 0.4); padding: 5px 14px; border-radius: 20px; font-size: 0.7rem; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 20px; font-weight: 600; }
+        .card-mockup { width: 300px; height: 175px; background: linear-gradient(135deg, #1a1214 0%, #0a0506 35%, #18080a 70%, #050507 100%); border: 1px solid rgba(255, 30, 56, 0.45); border-radius: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px; margin-bottom: 22px; box-shadow: 0 15px 35px rgba(0,0,0,0.9); position: relative; overflow: hidden; }
+        .qr-frame { background: #fff; padding: 4px; border-radius: 4px; }
+        .qr-frame img, .qr-frame canvas { display: block; width: 60px !important; height: 60px !important; }
+        h1 { font-size: 1.15rem; font-weight: 500; letter-spacing: 1px; margin-bottom: 8px; }
+        p { color: var(--text-muted); font-size: 0.82rem; line-height: 1.6; margin-bottom: 25px; }
+        .btn-claim { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: linear-gradient(135deg, #ff1e38 0%, #b81023 100%); color: #ffffff; text-decoration: none; padding: 15px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 10px 25px var(--alert-glow); transition: transform 0.3s ease; }
+        .btn-claim:hover { transform: translateY(-3px); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="brand-logo">ALERTIX</div>
+        <div class="card-id-badge" id="badgeId">Cargando...</div>
+        <div class="card-mockup">
+            <div style="color: var(--alert-red); font-size: 1.5rem; font-weight: 700;">ALERTIX</div>
+            <div class="qr-frame" id="qrContainer"></div>
+        </div>
+        <h1>Seguridad y Respuesta Rápida</h1>
+        <p>Esta tarjeta Alertix se encuentra disponible en stock lista para ser programada y asignada.</p>
+        <a id="whatsappBtn" href="#" target="_blank" class="btn-claim">
+            <i class="fa-brands fa-whatsapp"></i> Reclamar Alerta
+        </a>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const cardId = urlParams.get('id') || "A-0001";
+        document.getElementById('badgeId').innerText = `Tarjeta #${cardId}`;
+        new QRCode(document.getElementById("qrContainer"), {
+            text: window.location.href, width: 60, height: 60, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.H
+        });
+        const mensajeWa = encodeURIComponent(`Hola, quiero reclamar y activar la tarjeta Alertix ID #${cardId} para mi sistema de seguridad.`);
+        document.getElementById('whatsappBtn').href = `https://wa.me/TU_NUMERO_DE_EMPRESA?text=${mensajeWa}`;
+    </script>
+</body>
+</html>
