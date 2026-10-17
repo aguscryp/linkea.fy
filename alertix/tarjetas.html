@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control | linkea.fy Alertix</title>
+    <!-- Librería para generar los códigos QR en el panel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -15,72 +17,321 @@
             --text-muted: #88888c;
             --border-color: rgba(255, 30, 56, 0.25);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 30px 20px; min-height: 100vh; }
-        .header { max-width: 1100px; margin: 0 auto 30px auto; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
-        .brand-logo { color: var(--alert-red); font-size: 2rem; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 15px var(--alert-glow); }
-        .stats-container { display: flex; gap: 15px; }
-        .stat-badge { background: rgba(255, 30, 56, 0.1); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; color: var(--text-muted); }
-        .stat-badge strong { color: var(--text-main); }
-        .grid-cards { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        .card-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: transform 0.3s ease, border-color 0.3s ease; }
-        .card-item:hover { transform: translateY(-4px); border-color: var(--alert-red); }
-        .card-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .card-id { font-size: 1.1rem; font-weight: 700; color: var(--alert-red); letter-spacing: 1px; }
-        .status-pill { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        .status-pill.activa { background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid rgba(46, 213, 115, 0.3); }
-        .status-pill.stock { background: rgba(255, 171, 0, 0.15); color: #ffab00; border: 1px solid rgba(255, 171, 0, 0.3); }
-        .info-field { margin-bottom: 10px; font-size: 0.85rem; text-align: left; }
-        .info-field span { color: var(--text-muted); display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .info-field strong { color: var(--text-main); font-weight: 500; }
-        .card-actions { margin-top: 18px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; gap: 10px; }
-        .btn-action { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(255, 30, 56, 0.08); color: var(--text-main); text-decoration: none; font-size: 0.75rem; text-align: center; transition: all 0.2s ease; }
-        .btn-action:hover { background: var(--alert-red); color: #fff; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .brand-logo {
+            color: var(--alert-red);
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px var(--alert-glow);
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 15px;
+        }
+
+        .stat-badge {
+            background: rgba(255, 30, 56, 0.1);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .stat-badge strong {
+            color: var(--text-main);
+        }
+
+        .grid-cards {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .card-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--alert-red);
+        }
+
+        /* Miniatura de la tarjeta metálica Alertix */
+        .card-preview {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #1a1214 0%, #0a0506 35%, #18080a 70%, #050507 100%);
+            border: 1px solid rgba(255, 30, 56, 0.45);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.15);
+        }
+
+        .card-preview::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(115deg, transparent 0%, rgba(255, 30, 56, 0.15) 50%, transparent 100%);
+            transform: rotate(25deg);
+            pointer-events: none;
+        }
+
+        .preview-logo {
+            color: var(--alert-red);
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 30, 56, 0.4);
+        }
+
+        .preview-qr-box {
+            background: #ffffff;
+            padding: 4px;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 2;
+        }
+
+        .preview-qr-box img, .preview-qr-box canvas {
+            display: block;
+            width: 50px !important;
+            height: 50px !important;
+        }
+
+        .card-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-id {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--alert-red);
+            letter-spacing: 1px;
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .status-pill.activa {
+            background: rgba(46, 213, 115, 0.15);
+            color: #2ed573;
+            border: 1px solid rgba(46, 213, 115, 0.3);
+        }
+
+        .status-pill.stock {
+            background: rgba(255, 171, 0, 0.15);
+            color: #ffab00;
+            border: 1px solid rgba(255, 171, 0, 0.3);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .info-field {
+            font-size: 0.8rem;
+            text-align: left;
+        }
+
+        .info-field span {
+            color: var(--text-muted);
+            display: block;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-field strong {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: rgba(255, 30, 56, 0.08);
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-action:hover {
+            background: var(--alert-red);
+            color: #fff;
+            box-shadow: 0 0 12px var(--alert-glow);
+        }
     </style>
 </head>
 <body>
+
     <div class="header">
         <div>
             <div class="brand-logo">ALERTIX</div>
-            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">Panel de Gestión de Tarjetas de Emergencia</p>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">Panel de Gestión y Visualización de Tarjetas</p>
         </div>
         <div class="stats-container">
             <div class="stat-badge">Total: <strong id="totalCards">0</strong></div>
             <div class="stat-badge">Activas: <strong id="activeCards">0</strong></div>
         </div>
     </div>
-    <div class="grid-cards" id="cardsGrid"></div>
+
+    <div class="grid-cards" id="cardsGrid">
+        <!-- Las tarjetas con su diseño y QR se inyectarán aquí -->
+    </div>
+
     <script>
         async function cargarPanel() {
             const grid = document.getElementById('cardsGrid');
             try {
                 const response = await fetch('tarjetas.json?_=' + new Date().getTime());
-                if (!response.ok) throw new Error("No se pudo cargar tarjetas.json");
+                if (!response.ok) throw new Error("No se pudo cargar el archivo tarjetas.json");
+
                 const tarjetas = await response.json();
+
                 document.getElementById('totalCards').innerText = tarjetas.length;
                 document.getElementById('activeCards').innerText = tarjetas.filter(t => t.estado === 'activa').length;
+
                 grid.innerHTML = '';
-                tarjetas.forEach(t => {
-                    grid.innerHTML += `
+
+                tarjetas.forEach((t, index) => {
+                    // Construimos la URL única a la que apunta la tarjeta física
+                    const urlRedireccion = `${window.location.origin}/alertix/tt/${t.id}/index.html`;
+
+                    const cardHTML = `
                         <div class="card-item">
+                            <!-- Miniatura visual de la tarjeta Alertix -->
+                            <div class="card-preview">
+                                <div>
+                                    <div class="preview-logo">ALERTIX</div>
+                                    <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">#${t.id}</div>
+                                </div>
+                                <div class="preview-qr-box" id="qr-panel-${index}"></div>
+                            </div>
+
                             <div class="card-item-header">
-                                <span class="card-id">#${t.id}</span>
+                                <span class="card-id">Tarjeta #${t.id}</span>
                                 <span class="status-pill ${t.estado}">${t.estado}</span>
                             </div>
-                            <div class="info-field"><span>Cliente:</span><strong>${t.cliente || 'Sin asignar'}</strong></div>
-                            <div class="info-field"><span>DNI:</span><strong>${t.dni || 'N/A'}</strong></div>
-                            <div class="info-field"><span>Ubicación:</span><strong>${t.ubicacion || 'No configurada'}</strong></div>
-                            <div class="info-field"><span>WhatsApp Cliente:</span><strong>${t.whatsappCliente || 'N/A'}</strong></div>
+
+                            <div class="info-grid">
+                                <div class="info-field" style="grid-column: span 2;">
+                                    <span>Cliente:</span>
+                                    <strong>${t.cliente || 'Sin asignar (Stock)'}</strong>
+                                </div>
+                                <div class="info-field">
+                                    <span>DNI:</span>
+                                    <strong>${t.dni || 'N/A'}</strong>
+                                </div>
+                                <div class="info-field">
+                                    <span>WhatsApp:</span>
+                                    <strong>${t.whatsappCliente || 'N/A'}</strong>
+                                </div>
+                                <div class="info-field" style="grid-column: span 2;">
+                                    <span>Ubicación:</span>
+                                    <strong>${t.ubicacion || 'No configurada'}</strong>
+                                </div>
+                            </div>
+
                             <div class="card-actions">
-                                <a href="tt/${t.id}/index.html" target="_blank" class="btn-action"><i class="fa-solid fa-arrow-up-right-from-square"></i> Probar Alerta</a>
+                                <a href="tt/${t.id}/index.html" target="_blank" class="btn-action">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Probar
+                                </a>
+                                <a href="alertix-stock.html?id=${t.id}" target="_blank" class="btn-action">
+                                    <i class="fa-solid fa-eye"></i> Stock
+                                </a>
                             </div>
                         </div>
                     `;
+                    grid.innerHTML += cardHTML;
+
+                    // Generar el código QR miniatura para cada tarjeta dentro del panel
+                    setTimeout(() => {
+                        new QRCode(document.getElementById(`qr-panel-${index}`), {
+                            text: urlRedireccion,
+                            width: 50,
+                            height: 50,
+                            colorDark: "#000000",
+                            colorLight: "#ffffff",
+                            correctLevel: QRCode.CorrectLevel.H
+                        });
+                    }, 50);
                 });
+
             } catch (error) {
                 grid.innerHTML = `<p style="color: var(--alert-red);">Error al cargar las tarjetas: ${error.message}</p>`;
             }
         }
+
         cargarPanel();
     </script>
 </body>
