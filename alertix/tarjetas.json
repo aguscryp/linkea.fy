@@ -1,1 +1,20 @@
-
+[
+  {
+    "id": "A-0001",
+    "estado": "activa",
+    "cliente": "Carlos Gómez",
+    "dni": "35123456",
+    "ubicacion": "Av. Libertador 4500, Local 3 (Alarma Principal)",
+    "whatsappCliente": "+5491112345678",
+    "whatsappEmpresa": "+5491198765432"
+  },
+  {
+    "id": "A-0002",
+    "estado": "stock",
+    "cliente": "",
+    "dni": "",
+    "ubicacion": "",
+    "whatsappCliente": "",
+    "whatsappEmpresa": "+5491198765432"
+  }
+]
