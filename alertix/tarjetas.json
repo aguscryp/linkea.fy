@@ -2,11 +2,11 @@
   {
     "id": "A-0001",
     "estado": "activa",
-    "cliente": "Carlos Gómez",
-    "dni": "35123456",
-    "ubicacion": "Barrio Los Troperos",
-    "whatsappCliente": "+5491112345678",
-    "whatsappEmpresa": "2644752364"
+    "cliente": "",
+    "dni": "",
+    "ubicacion": "",
+    "whatsappCliente": "",
+    "whatsappEmpresa": ""
   },
   {
     "id": "A-0002",
