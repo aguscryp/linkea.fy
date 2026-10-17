@@ -11,7 +11,6 @@
         :root {
             --bg-dark: #050507;
             --panel-bg: #0b0b0d;
-            /* Fondo negro metalizado puro idéntico a Black Gold */
             --card-metal: #121215;
             --alert-red: #ff1e38;
             --alert-glow: rgba(255, 30, 56, 0.4);
@@ -110,19 +109,19 @@
             border-color: rgba(255, 171, 0, 0.3);
         }
 
-        /* TARJETA FÍSICA ALERTIX (Negro metalizado puro) */
+        /* TARJETA FÍSICA ALERTIX (SIN BORDE ROJO, Negro metalizado puro) */
         .alertix-card-preview {
             width: 100%;
             height: 200px;
             background: var(--card-metal);
-            border: 1px solid var(--border-red);
+            border: none; /* Sin borde rojo */
             border-radius: 16px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             gap: 14px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.95), inset 0 1px 3px rgba(255, 255, 255, 0.08);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.95);
             position: relative;
             overflow: hidden;
             margin: 5px 0;
@@ -183,7 +182,7 @@
         }
 
         /* ==========================================
-           VENTANA MODAL ZOOM (ESTILO BLACK GOLD)
+           VENTANA MODAL ZOOM
            ========================================== */
         .modal-overlay {
             position: fixed;
@@ -252,14 +251,14 @@
             width: 100%;
             height: 250px;
             background: var(--card-metal);
-            border: 1px solid var(--border-red);
+            border: none; /* Sin borde rojo en el modal tampoco */
             border-radius: 16px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             gap: 18px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.95), inset 0 1px 3px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.95);
             position: relative;
             overflow: hidden;
         }
@@ -288,7 +287,7 @@
         }
 
         /* ==========================================
-           CONFIGURACIÓN DE IMPRESIÓN EXCLUSIVA
+           IMPRESIÓN EXCLUYENTE
            ========================================== */
         @media print {
             body * {
@@ -297,7 +296,6 @@
             body {
                 background: #ffffff !important;
             }
-            /* Solo muestra la tarjeta seleccionada para imprimir perfectamente centrada */
             #printContainer, #printContainer * {
                 visibility: visible;
             }
@@ -308,7 +306,7 @@
                 transform: translate(-50%, -50%);
                 width: 8.5cm;
                 height: 5cm;
-                border: 1px solid #333 !important;
+                border: none !important;
                 background: #121215 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
@@ -327,7 +325,7 @@
         <!-- Se generan dinámicamente -->
     </div>
 
-    <!-- CONTENEDOR OCULTO PARA IMPRESIÓN LIMPIA DE UNA SOLA TARJETA -->
+    <!-- CONTENEDOR OCULTO PARA IMPRESIÓN LIMPIA -->
     <div id="printContainer" style="display:none;"></div>
 
     <!-- VENTANA MODAL ZOOM -->
@@ -362,7 +360,7 @@
                                 <span class="badge-status ${t.estado}">${t.estado}</span>
                             </div>
 
-                            <!-- VISTA PREVIA DE LA TARJETA -->
+                            <!-- VISTA PREVIA DE LA TARJETA (Sin borde rojo) -->
                             <div class="alertix-card-preview" id="card-preview-${index}">
                                 <div class="card-brand-text">ALERTIX</div>
                                 <div class="qr-wrapper" id="qr-box-${index}"></div>
@@ -380,7 +378,6 @@
                     `;
                     grid.innerHTML += cardHTML;
 
-                    // Generar QR en la tarjeta del panel
                     setTimeout(() => {
                         new QRCode(document.getElementById(`qr-box-${index}`), {
                             text: urlTarjeta,
@@ -399,7 +396,6 @@
             }
         }
 
-        // FUNCIONES DEL MODAL ZOOM
         function abrirModalZoom(id, url) {
             document.getElementById('modalTitleId').innerText = `Tarjeta ID: ${id}`;
             const qrContainer = document.getElementById('modalQrContainer');
@@ -427,7 +423,6 @@
             }
         }
 
-        // Descargar QR individual en alta calidad
         function descargarQR(containerId, id) {
             const container = document.getElementById(containerId);
             const img = container.querySelector('img');
@@ -444,13 +439,17 @@
             }
         }
 
-        // Descargar tarjeta completa en ultra alta resolución (evita bordes pixelados)
+        /* ========================================================
+           DESCARGA EN ULTRA ALTA CALIDAD Y SIN PIXELADO (html2canvas)
+           ======================================================== */
         function descargarTarjetaImg(cardId, id) {
             const cardElement = document.getElementById(cardId);
+            
             html2canvas(cardElement, {
-                scale: 4, // Escala cuádruple para máxima nitidez y cero bordes feos
-                backgroundColor: "#121215",
-                useCORS: true
+                scale: 5,               // Multiplicador alto para máxima definición sin dientes de sierra
+                useCORS: true,
+                backgroundColor: "#121215", // Fuerza el color de fondo exacto para evitar bloques en esquinas
+                logging: false
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `Tarjeta_Alertix_${id}.png`;
@@ -459,7 +458,6 @@
             });
         }
 
-        // Imprimir únicamente la tarjeta seleccionada de forma limpia
         function imprimirTarjetaIndividual(id, url) {
             const printBox = document.getElementById('printContainer');
             printBox.style.display = 'block';
