@@ -1,1 +1,87 @@
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control | linkea.fy Alertix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #08080a;
+            --card-bg: #111115;
+            --alert-red: #ff1e38;
+            --alert-glow: rgba(255, 30, 56, 0.3);
+            --text-main: #ffffff;
+            --text-muted: #88888c;
+            --border-color: rgba(255, 30, 56, 0.25);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 30px 20px; min-height: 100vh; }
+        .header { max-width: 1100px; margin: 0 auto 30px auto; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .brand-logo { color: var(--alert-red); font-size: 2rem; font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 15px var(--alert-glow); }
+        .stats-container { display: flex; gap: 15px; }
+        .stat-badge { background: rgba(255, 30, 56, 0.1); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; color: var(--text-muted); }
+        .stat-badge strong { color: var(--text-main); }
+        .grid-cards { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .card-item { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: transform 0.3s ease, border-color 0.3s ease; }
+        .card-item:hover { transform: translateY(-4px); border-color: var(--alert-red); }
+        .card-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .card-id { font-size: 1.1rem; font-weight: 700; color: var(--alert-red); letter-spacing: 1px; }
+        .status-pill { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .status-pill.activa { background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid rgba(46, 213, 115, 0.3); }
+        .status-pill.stock { background: rgba(255, 171, 0, 0.15); color: #ffab00; border: 1px solid rgba(255, 171, 0, 0.3); }
+        .info-field { margin-bottom: 10px; font-size: 0.85rem; text-align: left; }
+        .info-field span { color: var(--text-muted); display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .info-field strong { color: var(--text-main); font-weight: 500; }
+        .card-actions { margin-top: 18px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; gap: 10px; }
+        .btn-action { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(255, 30, 56, 0.08); color: var(--text-main); text-decoration: none; font-size: 0.75rem; text-align: center; transition: all 0.2s ease; }
+        .btn-action:hover { background: var(--alert-red); color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="brand-logo">ALERTIX</div>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">Panel de Gestión de Tarjetas de Emergencia</p>
+        </div>
+        <div class="stats-container">
+            <div class="stat-badge">Total: <strong id="totalCards">0</strong></div>
+            <div class="stat-badge">Activas: <strong id="activeCards">0</strong></div>
+        </div>
+    </div>
+    <div class="grid-cards" id="cardsGrid"></div>
+    <script>
+        async function cargarPanel() {
+            const grid = document.getElementById('cardsGrid');
+            try {
+                const response = await fetch('tarjetas.json?_=' + new Date().getTime());
+                if (!response.ok) throw new Error("No se pudo cargar tarjetas.json");
+                const tarjetas = await response.json();
+                document.getElementById('totalCards').innerText = tarjetas.length;
+                document.getElementById('activeCards').innerText = tarjetas.filter(t => t.estado === 'activa').length;
+                grid.innerHTML = '';
+                tarjetas.forEach(t => {
+                    grid.innerHTML += `
+                        <div class="card-item">
+                            <div class="card-item-header">
+                                <span class="card-id">#${t.id}</span>
+                                <span class="status-pill ${t.estado}">${t.estado}</span>
+                            </div>
+                            <div class="info-field"><span>Cliente:</span><strong>${t.cliente || 'Sin asignar'}</strong></div>
+                            <div class="info-field"><span>DNI:</span><strong>${t.dni || 'N/A'}</strong></div>
+                            <div class="info-field"><span>Ubicación:</span><strong>${t.ubicacion || 'No configurada'}</strong></div>
+                            <div class="info-field"><span>WhatsApp Cliente:</span><strong>${t.whatsappCliente || 'N/A'}</strong></div>
+                            <div class="card-actions">
+                                <a href="tt/${t.id}/index.html" target="_blank" class="btn-action"><i class="fa-solid fa-arrow-up-right-from-square"></i> Probar Alerta</a>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                grid.innerHTML = `<p style="color: var(--alert-red);">Error al cargar las tarjetas: ${error.message}</p>`;
+            }
+        }
+        cargarPanel();
+    </script>
+</body>
+</html>
