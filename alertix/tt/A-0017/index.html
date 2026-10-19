@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Alerta | linkea.fy Alertix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #050507;
+            --alert-red: #ff1e38;
+            --alert-glow: rgba(255, 30, 56, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #88888c;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: linear-gradient(135deg, #150507 0%, #050507 35%, #1f080b 70%, #050507 100%); color: var(--text-main); display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; text-align: center; }
+        .container { max-width: 420px; width: 100%; background: rgba(14, 14, 17, 0.92); border: 1px solid rgba(255, 30, 56, 0.4); border-radius: 24px; padding: 35px 22px; box-shadow: 0 30px 60px rgba(0,0,0,0.95), 0 0 35px rgba(255, 30, 56, 0.2); backdrop-filter: blur(15px); display: flex; flex-direction: column; align-items: center; }
+        .brand-logo { color: var(--alert-red); font-size: 2.3rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 5px; text-shadow: 0 0 20px var(--alert-glow); }
+        .card-id-badge { display: inline-block; background: rgba(255, 30, 56, 0.12); color: var(--alert-red); border: 1px solid rgba(255, 30, 56, 0.4); padding: 5px 14px; border-radius: 20px; font-size: 0.7rem; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 25px; font-weight: 600; }
+        h1 { font-size: 1.15rem; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; color: var(--text-main); }
+        p { color: var(--text-muted); font-size: 0.82rem; line-height: 1.6; margin-bottom: 20px; }
+        .input-group { width: 100%; margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .input-emergency { width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 30, 56, 0.3); border-radius: 10px; padding: 12px; color: #fff; font-size: 0.9rem; resize: none; height: 90px; outline: none; transition: border-color 0.3s ease; }
+        .input-emergency:focus { border-color: var(--alert-red); box-shadow: 0 0 10px rgba(255, 30, 56, 0.2); }
+        .btn-alert { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: linear-gradient(135deg, #ff1e38 0%, #b81023 100%); color: #ffffff; text-decoration: none; padding: 15px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; box-shadow: 0 10px 25px var(--alert-glow); cursor: pointer; border: none; }
+        .btn-alert:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255, 30, 56, 0.6); }
+        .info-box { background: rgba(255, 255, 255, 0.03); border-left: 3px solid var(--alert-red); padding: 10px 14px; border-radius: 0 8px 8px 0; margin-bottom: 20px; width: 100%; text-align: left; }
+        .info-box span { display: block; font-size: 0.75rem; color: var(--text-muted); }
+        .info-box strong { font-size: 0.85rem; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="brand-logo">ALERTIX</div>
+        <div class="card-id-badge" id="badgeId">Verificando...</div>
+        <h1>Reporte de Emergencia</h1>
+        <p>Describe brevemente la situación. Al enviar, la alerta y tu ubicación registrada se enviarán de inmediato a la central.</p>
+        <div class="info-box">
+            <span>Ubicación Registrada:</span>
+            <strong id="ubicacionCliente">Cargando ubicación...</strong>
+        </div>
+        <div class="input-group">
+            <label for="problemaInput">¿Qué está pasando?</label>
+            <textarea id="problemaInput" class="input-emergency" placeholder="Ej: Persona sospechosa merodeando el local / Intento de robo..."></textarea>
+        </div>
+        <button id="enviarAlertaBtn" class="btn-alert">
+            <i class="fa-solid fa-triangle-exclamation"></i> Enviar Alerta Urgente
+        </button>
+    </div>
+    <script>
+        // ==========================================
+        // ID CORRESPONDIENTE A ESTA TARJETA
+        // ==========================================
+        const currentId = "A-0017";
+        // ==========================================
+
+        let datosTarjeta = null;
+
+        async function cargarDatos() {
+            try {
+                // Lee el JSON ubicado en la misma carpeta alertix
+                const response = await fetch('../../tarjetas.json?_=' + new Date().getTime());
+                if (response.ok) {
+                    const tarjetas = await response.json();
+                    datosTarjeta = tarjetas.find(t => t.id === currentId);
+
+                    if (datosTarjeta && datosTarjeta.estado === 'activa' && datosTarjeta.whatsappEmpresa) {
+                        document.getElementById('badgeId').innerText = `Tarjeta #${datosTarjeta.id}`;
+                        document.getElementById('ubicacionCliente').innerText = datosTarjeta.ubicacion || "Ubicación no especificada";
+                    } else {
+                        // Si no está activa o falta el WhatsApp de empresa, redirige al stock/activación
+                        window.location.replace(`../../alertix-stock.html?id=${currentId}`);
+                    }
+                }
+            } catch (error) {
+                console.error("Error al cargar datos:", error);
+                document.getElementById('ubicacionCliente').innerText = "Error al obtener ubicación";
+            }
+        }
+
+        cargarDatos();
+
+        document.getElementById('enviarAlertaBtn').addEventListener('click', () => {
+            if (!datosTarjeta) {
+                alert("Cargando datos, por favor espere un momento.");
+                return;
+            }
+
+            const problema = document.getElementById('problemaInput').value.trim();
+            const descripcionProblema = problema !== "" ? problema : "Emergencia reportada desde el botón rápido.";
+
+            const mensaje = encodeURIComponent(
+                `🚨 *ALERTA DE EMERGENCIA - ALERTIX* 🚨\n\n` +
+                `🆔 *ID Tarjeta:* ${datosTarjeta.id}\n` +
+                `👤 *Cliente:* ${datosTarjeta.cliente} (DNI: ${datosTarjeta.dni})\n` +
+                `📍 *Ubicación:* ${datosTarjeta.ubicacion}\n` +
+                `📞 *WhatsApp Cliente:* ${datosTarjeta.whatsappCliente}\n\n` +
+                `⚠️ *Problema Reportado:* \n${descripcionProblema}`
+            );
+
+            window.location.href = `https://wa.me/${datosTarjeta.whatsappEmpresa}?text=${mensaje}`;
+        });
+    </script>
+</body>
+</html>
