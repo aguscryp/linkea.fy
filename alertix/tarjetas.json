@@ -56,5 +56,45 @@
     "ubicacion": "",
     "whatsappCliente": "",
     "whatsappEmpresa": ""
+  },
+
+  {
+    "id": "A-0007",
+    "estado": "stock",
+    "cliente": "",
+    "dni": "",
+    "ubicacion": "",
+    "whatsappCliente": "",
+    "whatsappEmpresa": ""
+  },
+
+  {
+    "id": "A-0008",
+    "estado": "stock",
+    "cliente": "",
+    "dni": "",
+    "ubicacion": "",
+    "whatsappCliente": "",
+    "whatsappEmpresa": ""
+  },
+
+  {
+    "id": "A-0009",
+    "estado": "stock",
+    "cliente": "",
+    "dni": "",
+    "ubicacion": "",
+    "whatsappCliente": "",
+    "whatsappEmpresa": ""
+  },
+
+  {
+    "id": "A-0010",
+    "estado": "stock",
+    "cliente": "",
+    "dni": "",
+    "ubicacion": "",
+    "whatsappCliente": "",
+    "whatsappEmpresa": ""
   }
 ]
