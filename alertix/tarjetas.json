@@ -2,11 +2,11 @@
   {
     "id": "A-0001",
     "estado": "activa",
-    "cliente": "",
-    "dni": "",
-    "ubicacion": "",
-    "whatsappCliente": "",
-    "whatsappEmpresa": ""
+    "cliente": "Hernan Narigon",
+    "dni": "43078645",
+    "ubicacion": "Barrio Los Troperos , Manzana A , Casa 3",
+    "whatsappCliente": "2646261370",
+    "whatsappEmpresa": "2645615296"
   },
   {
     "id": "A-0002",
